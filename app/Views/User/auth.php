@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title><?= $page === 'register' ? 'Register' : 'Login' ?> | QueueMed</title>
+  <title>Login | QueueMed</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
 </head>
@@ -20,20 +20,6 @@
       <h4 class="fw-bold mb-0">QueueMed</h4>
       <small class="text-muted">Appointment & Queue Management System</small>
     </div>
-
-    <!-- TABS -->
-    <ul class="nav nav-pills nav-fill mb-4">
-      <li class="nav-item">
-        <a class="nav-link <?= $page === 'login' ? 'active' : '' ?>" href="<?= base_url('login') ?>">
-          <i class="bi bi-box-arrow-in-right me-1"></i> Login
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link <?= $page === 'register' ? 'active' : '' ?>" href="<?= base_url('register') ?>">
-          <i class="bi bi-person-plus me-1"></i> Register
-        </a>
-      </li>
-    </ul>
 
     <!-- SUCCESS MESSAGE -->
     <?php if (session()->getFlashdata('success')): ?>
@@ -62,9 +48,7 @@
     </div>
     <?php endif; ?>
 
-    <!-- ==================== LOGIN FORM ==================== -->
-    <?php if ($page === 'login'): ?>
-
+    <!-- LOGIN FORM -->
     <form method="POST" action="<?= base_url('login') ?>">
       <?= csrf_field() ?>
       <div class="mb-3">
@@ -98,63 +82,9 @@
       </div>
 
       <button type="submit" class="btn btn-primary w-100">
-        <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+        <i class="bi bi-box-arrow-in-right me-1"></i> Login
       </button>
     </form>
-
-    <!-- ==================== REGISTER FORM ==================== -->
-    <?php else: ?>
-
-    <form method="POST" action="<?= base_url('register') ?>">
-      <?= csrf_field() ?>
-      <div class="mb-3">
-        <label class="form-label fw-semibold small">Full Name</label>
-        <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-person"></i></span>
-          <input type="text" name="name" class="form-control"
-            placeholder="Enter your full name"
-            value="<?= old('name') ?>" required autofocus/>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label fw-semibold small">Email Address</label>
-        <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-          <input type="email" name="email" class="form-control"
-            placeholder="Enter your email"
-            value="<?= old('email') ?>" required/>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label fw-semibold small">Phone Number</label>
-        <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-          <input type="text" name="phone" class="form-control"
-            placeholder="09XXXXXXXXX"
-            value="<?= old('phone') ?>" required/>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label fw-semibold small">Password</label>
-        <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-lock"></i></span>
-          <input type="password" name="password" id="password" class="form-control"
-            placeholder="Min. 6 characters" required/>
-          <button type="button" class="btn btn-outline-secondary" id="togglePw">
-            <i class="bi bi-eye" id="eyeIcon"></i>
-          </button>
-        </div>
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100">
-        <i class="bi bi-person-check me-1"></i> Create Account
-      </button>
-    </form>
-
-    <?php endif; ?>
 
   </div>
   <div class="card-footer text-center text-muted small py-2">
