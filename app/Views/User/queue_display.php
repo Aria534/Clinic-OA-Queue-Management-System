@@ -21,10 +21,30 @@
       color: #1e3a5f;
       line-height: 1;
     }
-    .stat-card {
-      border-radius: 1rem;
-      border: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      font-size: .875rem;
+      font-weight: 600;
+      color: #334155;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all .2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .back-btn:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+      color: #1e293b;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transform: translateX(-2px);
+    }
+    .back-btn i {
+      font-size: 1.1rem;
     }
   </style>
 </head>
@@ -32,9 +52,14 @@
 
 <nav class="navbar navbar-light bg-white border-bottom shadow-sm">
   <div class="container">
-    <a class="navbar-brand fw-bold text-primary" href="<?= base_url('/') ?>">
-      <i class="bi bi-clipboard2-pulse"></i> QueueMed
-    </a>
+    <div class="d-flex align-items-center gap-3">
+      <a href="<?= base_url('/') ?>" class="back-btn">
+        <i class="bi bi-arrow-left"></i> Back
+      </a>
+      <a class="navbar-brand fw-bold text-primary mb-0" href="<?= base_url('/') ?>">
+        <i class="bi bi-clipboard2-pulse"></i> QueueMed
+      </a>
+    </div>
     <span class="small text-muted">
       <i class="bi bi-clock-history pulse"></i>
       <span id="last-updated">Connecting...</span>
@@ -48,7 +73,7 @@
   <div class="now-serving-banner p-4 mb-4">
     <div class="d-flex align-items-center gap-2 mb-2">
       <span class="badge bg-danger pulse">● LIVE</span>
-      <span class="fw-semibold text-muted small text-uppercase letter-spacing-1">Now Serving</span>
+      <span class="fw-semibold text-muted small text-uppercase">Now Serving</span>
     </div>
     <div class="row align-items-center">
       <div class="col">
@@ -101,7 +126,7 @@
           <?php foreach ($queue as $q): ?>
           <?php
             $status = $q['status'];
-            $badge = match($status) {
+            $badge  = match($status) {
               'serving'   => 'bg-success',
               'confirmed' => 'bg-primary',
               'in_queue'  => 'bg-info text-dark',
@@ -143,9 +168,9 @@ function fetchLive() {
   fetch('<?= base_url('api/queue-live') ?>')
     .then(r => r.json())
     .then(data => {
-      // Update serving banner
-      const servingNum = document.getElementById('serving-number');
+      const servingNum  = document.getElementById('serving-number');
       const servingName = document.getElementById('serving-name');
+
       if (data.serving) {
         const padded = 'A' + String(data.serving.queue_number).padStart(3, '0');
         servingNum.textContent  = padded;
@@ -155,14 +180,10 @@ function fetchLive() {
         servingName.textContent = '';
       }
 
-      // Update counts
-      document.getElementById('waiting-count').textContent   = data.waiting ?? 0;
-      document.getElementById('serving-count').textContent   = data.serving ? 1 : 0;
+      document.getElementById('waiting-count').textContent   = data.waiting   ?? 0;
+      document.getElementById('serving-count').textContent   = data.serving   ? 1 : 0;
       document.getElementById('completed-count').textContent = data.completed ?? 0;
-
-      // Update last updated time
-      document.getElementById('last-updated').textContent =
-        'Updated: ' + new Date().toLocaleTimeString();
+      document.getElementById('last-updated').textContent    = 'Updated: ' + new Date().toLocaleTimeString();
     })
     .catch(() => {
       document.getElementById('last-updated').textContent = 'Connection error. Retrying...';

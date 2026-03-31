@@ -52,7 +52,7 @@
                 <option value="">Select a service...</option>
                 <?php foreach ($services as $svc): ?>
                 <option value="<?= $svc['id'] ?>" <?= old('service_id')==$svc['id']?'selected':'' ?>>
-                  <?= esc($svc['name']) ?> (<?= $svc['duration'] ?> mins)
+                  <?= esc($svc['name']) ?>
                 </option>
                 <?php endforeach; ?>
               </select>

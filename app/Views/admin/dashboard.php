@@ -7,7 +7,6 @@ $nav_items = [
   ['id'=>'dashboard',    'label'=>'Dashboard',     'icon'=>'bi-grid-1x2-fill',    'href'=> base_url('admin/dashboard')],
   ['id'=>'appointments', 'label'=>'Appointments',  'icon'=>'bi-calendar-check',   'href'=> base_url('admin/appointments')],
   ['id'=>'queue',        'label'=>'Queue Monitor', 'icon'=>'bi-ticket-perforated','href'=> base_url('admin/queue')],
-  ['id'=>'users',        'label'=>'Patients',      'icon'=>'bi-people',           'href'=> base_url('admin/users')],
   ['id'=>'services',     'label'=>'Services',      'icon'=>'bi-clipboard2-pulse', 'href'=> base_url('admin/services')],
 ];
 ?>
@@ -101,28 +100,6 @@ $nav_items = [
 
     <!-- ==================== DASHBOARD ==================== -->
     <?php if ($page === 'dashboard'): ?>
-
-    <div class="alert alert-primary d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
-      <div>
-        <div class="small text-uppercase fw-semibold opacity-75">🔴 Now Serving</div>
-        <div class="display-6 fw-bold">A007</div>
-        <div class="small opacity-75">Window 2 — Dr. Santos</div>
-      </div>
-      <div class="d-flex gap-3 flex-wrap">
-        <div class="text-center">
-          <div class="fs-4 fw-bold text-warning"><?= $pending_count ?? 0 ?></div>
-          <div class="small">Waiting</div>
-        </div>
-        <div class="text-center">
-          <div class="fs-4 fw-bold text-success"><?= $serving_count ?? 0 ?></div>
-          <div class="small">Serving</div>
-        </div>
-        <div class="text-center">
-          <div class="fs-4 fw-bold"><?= $completed_today ?? 0 ?></div>
-          <div class="small">Completed</div>
-        </div>
-      </div>
-    </div>
 
     <div class="row g-3 mb-4">
       <div class="col-6 col-xl-3">
@@ -302,33 +279,6 @@ $nav_items = [
       </ul>
     </div>
 
-    <!-- ==================== USERS ==================== -->
-    <?php elseif ($page === 'users'): ?>
-
-    <div class="card shadow-sm border-0">
-      <div class="card-header bg-white fw-semibold">Patients</div>
-      <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Registered</th></tr>
-            </thead>
-            <tbody>
-            <?php foreach ($users ?? [] as $i => $u): ?>
-            <tr>
-              <td class="text-muted small"><?= $i+1 ?></td>
-              <td><?= esc($u['name']) ?></td>
-              <td class="text-muted small"><?= esc($u['email']) ?></td>
-              <td class="text-muted small"><?= esc($u['phone'] ?? '-') ?></td>
-              <td class="text-muted small"><?= esc($u['created_at'] ?? '-') ?></td>
-            </tr>
-            <?php endforeach; ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
     <!-- ==================== SERVICES ==================== -->
     <?php elseif ($page === 'services'): ?>
 
@@ -346,10 +296,6 @@ $nav_items = [
               <div class="mb-3">
                 <label class="form-label small fw-semibold">Description</label>
                 <textarea name="description" class="form-control" rows="2"></textarea>
-              </div>
-              <div class="mb-3">
-                <label class="form-label small fw-semibold">Duration (mins)</label>
-                <input type="number" name="duration" class="form-control" value="30" required/>
               </div>
               <button type="submit" class="btn btn-primary w-100">Add Service</button>
             </form>

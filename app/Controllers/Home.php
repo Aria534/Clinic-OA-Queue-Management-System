@@ -10,7 +10,7 @@ class Home extends BaseController
     public function index()
     {
         $serviceModel = new ServiceModel();
-        return view('User/register', [
+        return view('User/que_number', [
             'services' => $serviceModel->where('is_active', 1)->findAll(),
         ]);
     }

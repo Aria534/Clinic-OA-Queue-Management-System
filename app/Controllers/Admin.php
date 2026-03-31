@@ -47,6 +47,13 @@ class Admin extends BaseController
         }
 
         $model = new AppointmentModel();
+
+        // AUTO-DELETE pag completed or cancelled
+        if (in_array($status, ['completed', 'cancelled'])) {
+            $model->delete($id);
+            return redirect()->back()->with('success', 'Appointment completed and removed.');
+        }
+
         $model->update($id, ['status' => $status]);
 
         return redirect()->back()->with('success', 'Status updated.');
@@ -138,8 +145,8 @@ class Admin extends BaseController
         $model = new AppointmentModel();
         $appt  = $model->find($id);
 
-        if (!$appt || $appt['status'] !== 'completed') {
-            return redirect()->back()->with('error', 'Only completed appointments can be deleted.');
+        if (!$appt) {
+            return redirect()->back()->with('error', 'Appointment not found.');
         }
 
         $model->delete($id);
