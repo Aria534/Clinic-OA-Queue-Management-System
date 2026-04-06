@@ -82,7 +82,7 @@
   </div>
   <div class="overlay-title">🎉 It's Your Turn!</div>
   <div class="overlay-queue-number">
-    #<?= $appointment['queue_number'] ?>
+    <?= $appointment['queue_number'] ?>
   </div>
   <div class="overlay-sub">Please proceed to the consultation room now.</div>
   <button class="overlay-dismiss" onclick="dismissOverlay()">
@@ -92,7 +92,6 @@
 
 <nav class="navbar navbar-light bg-white border-bottom shadow-sm">
   <div class="container">
-    <!-- ✅ FIX 1: navbar brand now goes to home/booking page -->
     <a class="navbar-brand fw-bold text-primary" href="<?= base_url('/') ?>">
       <i class="bi bi-clipboard2-pulse"></i> QueueMed
     </a>
@@ -121,7 +120,7 @@
           <div id="status-alert" class="mx-3"></div>
 
           <div class="queue-number text-primary my-3" id="queue-number">
-            #<?= $appointment['queue_number'] ?>
+            <?= $appointment['queue_number'] ?>
           </div>
 
           <div class="d-flex justify-content-center gap-4 my-3" id="stats-row">
@@ -131,7 +130,7 @@
             </div>
             <div class="vr"></div>
             <div class="text-center">
-              <h2 class="fw-bold text-primary mb-0">#<?= $appointment['queue_number'] ?></h2>
+              <h2 class="fw-bold text-primary mb-0"><?= $appointment['queue_number'] ?></h2>
               <small class="text-muted">Your number</small>
             </div>
             <div class="vr"></div>
@@ -170,7 +169,6 @@
           </div>
 
           <div class="mt-4 d-flex gap-2 justify-content-center">
-            <!-- ✅ FIX 2: button now goes to home/booking page -->
             <a href="<?= base_url('/') ?>" class="btn btn-outline-secondary">
               <i class="bi bi-plus-circle"></i> Get Another Number
             </a>
@@ -223,7 +221,6 @@ function updateUI(data) {
   const aheadCount = document.getElementById('ahead-count');
   const waitTime   = document.getElementById('wait-time');
   const refreshTxt = document.getElementById('auto-refresh-text');
-  const queueNum   = document.getElementById('queue-number');
 
   aheadCount.textContent = ahead;
   waitTime.textContent   = '~' + (ahead * 15);
@@ -245,7 +242,7 @@ function updateUI(data) {
 
     icon.innerHTML          = '<i class="bi bi-person-check-fill text-success" style="font-size:4rem;"></i>';
     alert.innerHTML         = '<div class="alert alert-success fw-bold fs-5 pulse"><i class="bi bi-bell-fill"></i> It\'s Your Turn! Please proceed now.</div>';
-    queueNum.className      = 'queue-number text-success my-3';
+    document.getElementById('queue-number').className = 'queue-number text-success my-3';
     card.classList.add('serving-glow');
     header.style.background = '#198754';
     statsRow.classList.add('d-none');
@@ -274,7 +271,7 @@ function updateUI(data) {
     statsRow.classList.remove('d-none');
     card.classList.remove('serving-glow');
     header.style.background = '#0d6efd';
-    queueNum.className      = 'queue-number text-primary my-3';
+    document.getElementById('queue-number').className = 'queue-number text-primary my-3';
 
     if (ahead === 0) {
       alert.innerHTML = '<div class="alert alert-success fw-semibold"><i class="bi bi-bell-fill"></i> You\'re next! Please be ready.</div>';
@@ -298,13 +295,11 @@ function fetchStatus() {
     });
 }
 
-// Initial render from PHP
 updateUI({
   status: '<?= $appointment['status'] ?>',
   ahead:  <?= $ahead ?>
 });
 
-// Poll every 10 seconds
 window.pollInterval = setInterval(fetchStatus, 10000);
 </script>
 </body>

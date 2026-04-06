@@ -146,7 +146,7 @@ $nav_items = [
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
-              <tr><th>Queue #</th><th>Patient</th><th>Service</th><th>Date</th><th>Status</th><th>Action</th><th>Delete</th></tr>
+              <tr><th>Queue #</th><th>Patient</th><th>Service</th><th>Date</th><th>Status</th><th>Action</th></tr>
             </thead>
             <tbody>
             <?php foreach ($recent_appts ?? [] as $a): ?>
@@ -173,15 +173,6 @@ $nav_items = [
                   </select>
                 </form>
               </td>
-              <td>
-                <?php if (in_array($a['status'] ?? '', ['completed', 'cancelled'])): ?>
-                <form method="POST" action="<?= base_url('admin/appointments/delete') ?>" class="d-inline" onsubmit="return confirm('Delete this appointment?')">
-                  <?= csrf_field() ?>
-                  <input type="hidden" name="id" value="<?= $a['id'] ?>">
-                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
-                <?php endif; ?>
-              </td>
             </tr>
             <?php endforeach; ?>
             </tbody>
@@ -199,7 +190,7 @@ $nav_items = [
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
-              <tr><th>Queue #</th><th>Patient</th><th>Service</th><th>Date</th><th>Status</th><th>Action</th><th>Delete</th></tr>
+              <tr><th>Queue #</th><th>Patient</th><th>Service</th><th>Date</th><th>Status</th><th>Action</th></tr>
             </thead>
             <tbody>
             <?php foreach ($appointments ?? [] as $a): ?>
@@ -225,15 +216,6 @@ $nav_items = [
                     <?php endforeach; ?>
                   </select>
                 </form>
-              </td>
-              <td>
-                <?php if (in_array($a['status'] ?? '', ['completed', 'cancelled'])): ?>
-                <form method="POST" action="<?= base_url('admin/appointments/delete') ?>" class="d-inline" onsubmit="return confirm('Delete this appointment?')">
-                  <?= csrf_field() ?>
-                  <input type="hidden" name="id" value="<?= $a['id'] ?>">
-                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
-                <?php endif; ?>
               </td>
             </tr>
             <?php endforeach; ?>

@@ -89,6 +89,14 @@
       </button>
     </form>
 
+    <!-- GET QUEUE NUMBER BUTTON -->
+    <div class="text-center mt-3">
+      <div class="text-muted small mb-2">Are you a patient?</div>
+      <a href="<?= base_url('/') ?>" class="btn btn-outline-success w-100">
+        <i class="bi bi-ticket-perforated me-1"></i> Get Queue Number
+      </a>
+    </div>
+
   </div>
   <div class="card-footer text-center text-muted small py-2">
     &copy; <?= date('Y') ?> QueueMed. All rights reserved.

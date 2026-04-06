@@ -43,9 +43,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       transform: translateX(-2px);
     }
-    .back-btn i {
-      font-size: 1.1rem;
-    }
+    .back-btn i { font-size: 1.1rem; }
   </style>
 </head>
 <body>
@@ -78,81 +76,25 @@
     <div class="row align-items-center">
       <div class="col">
         <div class="queue-number-big" id="serving-number">
-          <?php if ($serving): ?>
-            A<?= str_pad($serving['queue_number'], 3, '0', STR_PAD_LEFT) ?>
-          <?php else: ?>
-            <span class="text-muted fs-1">— No Active Queue —</span>
-          <?php endif; ?>
+          <span class="text-muted fs-1">— No Active Queue —</span>
         </div>
-        <div class="text-muted mt-1" id="serving-name">
-          <?= $serving ? esc($serving['patient_name']) : '' ?>
-        </div>
+        <div class="text-muted mt-1" id="serving-name"></div>
       </div>
       <div class="col-auto text-end">
         <div class="d-flex gap-4">
           <div class="text-center">
-            <div class="fs-3 fw-bold text-warning" id="waiting-count"><?= $waiting ?></div>
+            <div class="fs-3 fw-bold text-warning" id="waiting-count">0</div>
             <small class="text-muted">Waiting</small>
           </div>
           <div class="text-center">
-            <div class="fs-3 fw-bold text-success" id="serving-count"><?= $serving ? 1 : 0 ?></div>
+            <div class="fs-3 fw-bold text-success" id="serving-count">0</div>
             <small class="text-muted">Serving</small>
           </div>
           <div class="text-center">
-            <div class="fs-3 fw-bold text-secondary" id="completed-count"><?= $completed ?></div>
+            <div class="fs-3 fw-bold text-secondary" id="completed-count">0</div>
             <small class="text-muted">Completed</small>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- QUEUE LIST -->
-  <div class="card border-0 shadow-sm" style="border-radius:1.5rem;">
-    <div class="card-header bg-white py-3" style="border-radius:1.5rem 1.5rem 0 0;">
-      <h5 class="mb-0 fw-semibold">
-        <i class="bi bi-list-ol text-primary me-2"></i>Today's Queue
-      </h5>
-    </div>
-    <div class="card-body p-0">
-      <div id="queue-list">
-        <?php if (empty($queue)): ?>
-        <div class="text-center text-muted py-5">
-          <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
-          No queue for today yet.
-        </div>
-        <?php else: ?>
-        <ul class="list-group list-group-flush">
-          <?php foreach ($queue as $q): ?>
-          <?php
-            $status = $q['status'];
-            $badge  = match($status) {
-              'serving'   => 'bg-success',
-              'confirmed' => 'bg-primary',
-              'in_queue'  => 'bg-info text-dark',
-              'completed' => 'bg-secondary',
-              'cancelled' => 'bg-danger',
-              default     => 'bg-warning text-dark',
-            };
-          ?>
-          <li class="list-group-item d-flex align-items-center gap-3 py-3
-            <?= $status === 'serving' ? 'bg-success bg-opacity-10' : '' ?>">
-            <div class="text-center" style="width:60px;">
-              <div class="fs-4 fw-bold text-primary font-monospace">
-                A<?= str_pad($q['queue_number'], 3, '0', STR_PAD_LEFT) ?>
-              </div>
-            </div>
-            <div class="flex-grow-1">
-              <div class="fw-semibold"><?= esc($q['patient_name']) ?></div>
-              <div class="small text-muted"><?= esc($q['service_name'] ?? '—') ?></div>
-            </div>
-            <span class="badge <?= $badge ?>">
-              <?= ucfirst(str_replace('_', ' ', $status)) ?>
-            </span>
-          </li>
-          <?php endforeach; ?>
-        </ul>
-        <?php endif; ?>
       </div>
     </div>
   </div>
@@ -163,6 +105,7 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 function fetchLive() {
   fetch('<?= base_url('api/queue-live') ?>')
@@ -172,8 +115,7 @@ function fetchLive() {
       const servingName = document.getElementById('serving-name');
 
       if (data.serving) {
-        const padded = 'A' + String(data.serving.queue_number).padStart(3, '0');
-        servingNum.textContent  = padded;
+        servingNum.textContent  = data.serving.queue_number;
         servingName.textContent = data.serving.patient_name;
       } else {
         servingNum.innerHTML    = '<span class="text-muted fs-1">— No Active Queue —</span>';
@@ -190,6 +132,7 @@ function fetchLive() {
     });
 }
 
+fetchLive();
 setInterval(fetchLive, 10000);
 </script>
 
