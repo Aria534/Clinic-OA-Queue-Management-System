@@ -50,55 +50,66 @@ class API extends BaseController
         $db    = \Config\Database::connect();
         $today = date('Y-m-d');
 
-        // Fix — COALESCE para ma-include ang guest patients
-        $serving = $db->table('appointments a')
-            ->select('
-                a.queue_number,
-                a.started_at,
-                COALESCE(a.patient_name, u.name) as patient_name,
-                s.name as service_name,
-                s.department_code
-            ')
-            ->join('users u', 'u.id = a.user_id', 'left')
-            ->join('services s', 's.id = a.service_id', 'left')
-            ->where('a.appointment_date', $today)
-            ->where('a.status', 'serving')
-            ->get()->getRowArray();
-
-        $waiting = $db->table('appointments')
-            ->where('appointment_date', $today)
-            ->whereIn('status', ['confirmed', 'in_queue', 'pending'])
-            ->countAllResults();
-
-        $completed = $db->table('appointments')
-            ->where('appointment_date', $today)
-            ->where('status', 'completed')
-            ->countAllResults();
-
-        // Queue list para sa display — by department
-        $queue = $db->table('appointments a')
-            ->select('
-                a.id,
-                a.queue_number,
-                a.status,
-                COALESCE(a.patient_name, u.name) as patient_name,
-                s.name as service_name,
-                s.department_code
-            ')
-            ->join('users u', 'u.id = a.user_id', 'left')
-            ->join('services s', 's.id = a.service_id', 'left')
-            ->where('a.appointment_date', $today)
-            ->whereIn('a.status', ['confirmed', 'in_queue', 'pending', 'serving'])
-            ->orderBy('s.department_code', 'ASC')
-            ->orderBy('a.queue_number', 'ASC')
+        // Get all services na naa'y activity today
+        $services = $db->table('services s')
+            ->select('s.id, s.name, s.department_code')
+            ->join('appointments a', "a.service_id = s.id AND a.appointment_date = '" . $today . "'", 'inner')
+            ->groupBy('s.id')
             ->get()->getResultArray();
 
+        $departments = [];
+
+        foreach ($services as $service) {
+            $sid = $service['id'];
+
+            // Currently serving for this service
+            $serving = $db->table('appointments a')
+                ->select('a.queue_number, COALESCE(a.patient_name, u.name) as patient_name')
+                ->join('users u', 'u.id = a.user_id', 'left')
+                ->where('a.appointment_date', $today)
+                ->where('a.service_id', $sid)
+                ->where('a.status', 'serving')
+                ->get()->getRowArray();
+
+            // Waiting count
+            $waiting = $db->table('appointments')
+                ->where('appointment_date', $today)
+                ->where('service_id', $sid)
+                ->whereIn('status', ['confirmed', 'in_queue', 'pending'])
+                ->countAllResults();
+
+            // Completed count
+            $completed = $db->table('appointments')
+                ->where('appointment_date', $today)
+                ->where('service_id', $sid)
+                ->where('status', 'completed')
+                ->countAllResults();
+
+            // Up next — next 3 waiting
+            $upNext = $db->table('appointments a')
+                ->select('a.queue_number, COALESCE(a.patient_name, u.name) as patient_name')
+                ->join('users u', 'u.id = a.user_id', 'left')
+                ->where('a.appointment_date', $today)
+                ->where('a.service_id', $sid)
+                ->whereIn('a.status', ['confirmed', 'in_queue', 'pending'])
+                ->orderBy('a.queue_number', 'ASC')
+                ->limit(3)
+                ->get()->getResultArray();
+
+            $departments[] = [
+                'service_id'      => $sid,
+                'service_name'    => $service['name'],
+                'department_code' => $service['department_code'],
+                'serving'         => $serving ?: null,
+                'waiting'         => $waiting,
+                'completed'       => $completed,
+                'up_next'         => $upNext,
+            ];
+        }
+
         return $this->response->setJSON([
-            'serving'   => $serving,
-            'waiting'   => $waiting,
-            'completed' => $completed,
-            'queue'     => $queue,
-            'timestamp' => date('H:i:s'),
+            'departments' => $departments,
+            'timestamp'   => date('H:i:s'),
         ]);
     }
 }
