@@ -6,12 +6,46 @@
   <title>Book a Queue | QueueMed</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --eg: #1a7a3c;
+      --eg-dark: #145f2e;
+      --eg-mid: #2ea05a;
+      --eg-light: #e8f5ee;
+      --eg-border: #c8e6d4;
+    }
+    body { background: linear-gradient(135deg, #e8f5ee 0%, #d0ead9 100%); min-height: 100vh; }
+    .navbar-brand { color: var(--eg) !important; }
+    .card { border-radius: 1.5rem; }
+    .form-control, .form-select {
+      border-color: var(--eg-border);
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--eg);
+      box-shadow: 0 0 0 3px rgba(26,122,60,0.12);
+    }
+    .btn-green {
+      background: linear-gradient(135deg, var(--eg) 0%, var(--eg-mid) 100%);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+    .btn-green:hover {
+      background: linear-gradient(135deg, var(--eg-dark) 0%, var(--eg) 100%);
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(26,122,60,0.3);
+    }
+  </style>
 </head>
-<body class="bg-light">
+<body>
 
 <nav class="navbar navbar-light bg-white border-bottom shadow-sm">
   <div class="container">
-    <span class="navbar-brand fw-bold text-primary">
+    <span class="navbar-brand fw-bold">
       <i class="bi bi-clipboard2-pulse"></i> QueueMed
     </span>
   </div>
@@ -64,7 +98,7 @@
                         placeholder="Any concerns or additional info..."><?= old('notes') ?></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 fw-bold py-2">
+            <button type="submit" class="btn btn-green w-100">
               <i class="bi bi-ticket-perforated me-1"></i> Get Queue Number
             </button>
           </form>

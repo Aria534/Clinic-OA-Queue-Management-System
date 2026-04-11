@@ -7,7 +7,13 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
   <style>
-    body { background: #f0f4f8; }
+    :root {
+      --nb: #4a2c0a;
+      --nb-mid: #7a4a1e;
+      --nb-light: #f5ede0;
+      --nb-border: #e0c8a0;
+    }
+    body { background: #f5ede0; }
 
     .queue-number { font-size: 6rem; font-weight: 800; line-height: 1; }
 
@@ -23,7 +29,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(25, 135, 84, 0.97);
+      background: rgba(74, 44, 10, 0.97);
       z-index: 9999;
       flex-direction: column;
       align-items: center;
@@ -47,20 +53,11 @@
       to   { transform: scale(1.06); }
     }
 
-    .overlay-title {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
-    .overlay-sub {
-      font-size: 1.1rem;
-      color: rgba(255,255,255,0.8);
-      margin-bottom: 2rem;
-    }
+    .overlay-title { font-size: 2.2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .overlay-sub   { font-size: 1.1rem; color: rgba(255,255,255,0.8); margin-bottom: 2rem; }
     .overlay-dismiss {
       background: #fff;
-      color: #198754;
+      color: var(--nb);
       border: none;
       font-weight: 700;
       font-size: 1rem;
@@ -69,9 +66,28 @@
       cursor: pointer;
       box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
-    .overlay-dismiss:hover { background: #e8f5e9; }
+    .overlay-dismiss:hover { background: var(--nb-light); }
 
     .card { border-radius: 1.5rem !important; }
+
+    /* navbar brand */
+    .navbar-brand { color: var(--nb) !important; }
+
+    /* card header */
+    .card-header-brown { background: linear-gradient(135deg, var(--nb) 0%, var(--nb-mid) 100%) !important; }
+
+    /* queue number & icon default color */
+    .text-node-brown { color: var(--nb) !important; }
+
+    /* buttons */
+    .btn-brown {
+      background: linear-gradient(135deg, var(--nb) 0%, var(--nb-mid) 100%);
+      border: none; color: #fff; font-weight: 600;
+    }
+    .btn-brown:hover {
+      background: linear-gradient(135deg, #3a1f05 0%, var(--nb) 100%);
+      color: #fff; box-shadow: 0 4px 14px rgba(74,44,10,0.35);
+    }
   </style>
 </head>
 <body>
@@ -93,7 +109,7 @@
 <nav class="navbar navbar-light bg-white border-bottom shadow-sm">
   <div class="container">
     <!-- ✅ FIX 1: navbar brand now goes to home/booking page -->
-    <a class="navbar-brand fw-bold text-primary" href="<?= base_url('/') ?>">
+    <a class="navbar-brand fw-bold" href="<?= base_url('/') ?>">
       <i class="bi bi-clipboard2-pulse"></i> QueueMed
     </a>
     <span class="small text-muted" id="last-updated">Connecting...</span>
@@ -106,7 +122,7 @@
 
       <div class="card border-0 shadow text-center" id="ticket-card">
 
-        <div class="card-header py-4 bg-primary" id="ticket-header">
+        <div class="card-header py-4 card-header-brown" id="ticket-header">
           <h4 class="text-white fw-bold mb-0">
             <i class="bi bi-ticket-perforated-fill"></i> Queue Ticket
           </h4>
@@ -115,12 +131,12 @@
 
         <div class="card-body py-4">
           <div id="status-icon" class="mb-3">
-            <i class="bi bi-hourglass-split text-primary" style="font-size:4rem;"></i>
+            <i class="bi bi-hourglass-split text-node-brown" style="font-size:4rem;"></i>
           </div>
 
           <div id="status-alert" class="mx-3"></div>
 
-          <div class="queue-number text-primary my-3" id="queue-number">
+          <div class="queue-number text-node-brown my-3" id="queue-number">
             #<?= $appointment['queue_number'] ?>
           </div>
 
@@ -131,7 +147,7 @@
             </div>
             <div class="vr"></div>
             <div class="text-center">
-              <h2 class="fw-bold text-primary mb-0">#<?= $appointment['queue_number'] ?></h2>
+              <h2 class="fw-bold text-node-brown mb-0">#<?= $appointment['queue_number'] ?></h2>
               <small class="text-muted">Your number</small>
             </div>
             <div class="vr"></div>
@@ -174,7 +190,7 @@
             <a href="<?= base_url('/') ?>" class="btn btn-outline-secondary">
               <i class="bi bi-plus-circle"></i> Get Another Number
             </a>
-            <button onclick="fetchStatus()" class="btn btn-primary">
+            <button onclick="fetchStatus()" class="btn btn-brown">
               <i class="bi bi-arrow-clockwise"></i> Refresh
             </button>
           </div>
@@ -270,11 +286,11 @@ function updateUI(data) {
   } else {
     wasServing   = false;
     overlayShown = false;
-    icon.innerHTML          = '<i class="bi bi-hourglass-split text-primary" style="font-size:4rem;"></i>';
+    icon.innerHTML          = '<i class="bi bi-hourglass-split text-node-brown" style="font-size:4rem;"></i>';
     statsRow.classList.remove('d-none');
     card.classList.remove('serving-glow');
-    header.style.background = '#0d6efd';
-    queueNum.className      = 'queue-number text-primary my-3';
+    header.style.background = 'linear-gradient(135deg, #4a2c0a 0%, #7a4a1e 100%)';
+    queueNum.className      = 'queue-number text-node-brown my-3';
 
     if (ahead === 0) {
       alert.innerHTML = '<div class="alert alert-success fw-semibold"><i class="bi bi-bell-fill"></i> You\'re next! Please be ready.</div>';
