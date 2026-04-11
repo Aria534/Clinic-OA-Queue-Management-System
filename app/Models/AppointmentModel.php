@@ -55,13 +55,31 @@ class AppointmentModel extends Model
             ->get()->getResultArray();
     }
 
-    public function getNextQueueNumber(string $date): int
+    public function getNextQueueNumber(string $date, int $serviceId): string
     {
-        $result = $this->db->table('appointments')
-            ->selectMax('queue_number')
-            ->where('appointment_date', $date)
+        // Kuha ang department_code sa service
+        $service = $this->db->table('services')
+            ->select('department_code')
+            ->where('id', $serviceId)
             ->get()->getRowArray();
 
-        return ($result['queue_number'] ?? 0) + 1;
+        $prefix = $service['department_code'] ?? 'G';
+
+        // Kuha ang pinakataas nga queue number para sa same date + same prefix
+        $result = $this->db->table('appointments')
+            ->select('queue_number')
+            ->where('appointment_date', $date)
+            ->like('queue_number', $prefix . '-', 'after')
+            ->orderBy('queue_number', 'DESC')
+            ->limit(1)
+            ->get()->getRowArray();
+
+        if ($result) {
+            $num = (int) substr($result['queue_number'], strpos($result['queue_number'], '-') + 1);
+        } else {
+            $num = 0;
+        }
+
+        return $prefix . '-' . str_pad($num + 1, 3, '0', STR_PAD_LEFT);
     }
 }

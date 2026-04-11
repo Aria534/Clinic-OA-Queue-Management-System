@@ -74,21 +74,19 @@
                      value="<?= old('patient_name') ?>"/>
             </div>
 
-            <div class="mb-3">
-              <label class="form-label fw-semibold small">Email Address</label>
-              <input type="email" name="patient_email" class="form-control"
-                     value="<?= old('patient_email') ?>"/>
-            </div>
-
-            <div class="mb-3">
+            <div class="mb-4">
               <label class="form-label fw-semibold small">Service</label>
               <select name="service_id" class="form-select" required>
                 <option value="">Select a service...</option>
-                <?php foreach ($services as $svc): ?>
+                <?php 
+                $allowed = ['General Consultation', 'Dental Check-up', 'Blood Test'];
+                foreach ($services as $svc): 
+                  if (in_array($svc['name'], $allowed)):
+                ?>
                 <option value="<?= $svc['id'] ?>" <?= old('service_id')==$svc['id']?'selected':'' ?>>
                   <?= esc($svc['name']) ?>
                 </option>
-                <?php endforeach; ?>
+                <?php endif; endforeach; ?>
               </select>
             </div>
 

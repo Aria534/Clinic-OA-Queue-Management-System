@@ -27,15 +27,17 @@ class Home extends BaseController
                 ->with('error', implode(' ', $this->validator->getErrors()));
         }
 
-        $model       = new AppointmentModel();
-        $today       = date('Y-m-d');
-        $queueNumber = $model->getNextQueueNumber($today);
+        $model     = new AppointmentModel();
+        $serviceId = (int) $this->request->getPost('service_id');
+        $today     = date('Y-m-d');
+
+        $queueNumber = $model->getNextQueueNumber($today, $serviceId);
 
         $id = $model->insert([
             'user_id'          => null,
             'patient_name'     => $this->request->getPost('patient_name'),
             'patient_email'    => null,
-            'service_id'       => $this->request->getPost('service_id'),
+            'service_id'       => $serviceId,
             'appointment_date' => $today,
             'appointment_time' => date('H:i:s'),
             'queue_number'     => $queueNumber,
