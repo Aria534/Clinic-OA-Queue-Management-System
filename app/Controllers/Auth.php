@@ -11,15 +11,7 @@ class Auth extends BaseController
         if (session()->get('logged_in')) {
             return $this->redirectByRole();
         }
-        return view('User/auth', ['page' => 'login']);
-    }
-
-    public function register()
-    {
-        if (session()->get('logged_in')) {
-            return $this->redirectByRole();
-        }
-        return view('User/auth', ['page' => 'register']);
+        return view('User/login');
     }
 
     public function login()
@@ -30,14 +22,22 @@ class Auth extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return redirect()->back()->withInput()
+                ->with('errors', $this->validator->getErrors());
         }
 
         $model = new UserModel();
         $user  = $model->findByEmail($this->request->getPost('email'));
 
         if (!$user || !$model->verifyPassword($this->request->getPost('password'), $user['password'])) {
-            return redirect()->back()->withInput()->with('error', 'Invalid email or password.');
+            return redirect()->back()->withInput()
+                ->with('error', 'Invalid email or password.');
+        }
+
+        // Only admins can log in — patients just use the walk-in form
+        if ($user['role'] !== 'admin') {
+            return redirect()->back()->withInput()
+                ->with('error', 'Access denied. Please use the queue form instead.');
         }
 
         session()->set([
@@ -48,44 +48,18 @@ class Auth extends BaseController
             'role'      => $user['role'],
         ]);
 
-        return $this->redirectByRole();
-    }
-
-    public function store()
-    {
-        $rules = [
-            'name'     => 'required|min_length[2]',
-            'email'    => 'required|valid_email|is_unique[users.email]',
-            'phone'    => 'required',
-            'password' => 'required|min_length[6]',
-        ];
-
-        if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
-
-        $model = new UserModel();
-        $model->save([
-            'name'     => $this->request->getPost('name'),
-            'email'    => $this->request->getPost('email'),
-            'phone'    => $this->request->getPost('phone'),
-            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'role'     => 'patient',
-        ]);
-
-        return redirect()->to(base_url('login'))->with('success', 'Registration successful! Please login.');
+        return redirect()->to(base_url('admin'));
     }
 
     public function logout()
     {
         session()->destroy();
-        return redirect()->to(base_url('login'))->with('success', 'Logged out successfully.');
+        return redirect()->to(base_url('login'))
+            ->with('success', 'Logged out successfully.');
     }
 
     private function redirectByRole()
     {
-        return session()->get('role') === 'admin'
-            ? redirect()->to(base_url('admin/dashboard'))
-            : redirect()->to(base_url('patient/dashboard'));
+        return redirect()->to(base_url('admin'));
     }
 }
