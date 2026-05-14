@@ -4,44 +4,23 @@ use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
 
-// ── GUEST BOOKING (no login required) ────────────────────
-$routes->get('/',     'Home::index');
-$routes->post('book', 'Home::book');
-
-// ── QUEUE TICKET (no login required) ─────────────────────
-$routes->get('queue/status/(:num)', 'Queue::status/$1');
-
-// ── PUBLIC QUEUE DISPLAY (no login required) ──────────────
-$routes->get('queue/display', 'Admin::display');
-
-// ── API (no login required) ───────────────────────────────
-$routes->get('api/queue-status/(:num)', 'API::queueStatus/$1');
-$routes->get('api/queue-live',          'API::queueLive');
+// ── PUBLIC — Walk-in queue (no login required) ────────────
+$routes->get('/',               'Queue::index');       // booking form
+$routes->post('book',           'Queue::book');        // submit → get number
+$routes->get('ticket/(:num)',   'Queue::ticket/$1');   // show issued ticket
 
 // ── AUTH ──────────────────────────────────────────────────
 $routes->get('login',  'Auth::index');
 $routes->post('login', 'Auth::login');
 $routes->get('logout', 'Auth::logout');
 
-// ── PATIENT (login required) ──────────────────────────────
-$routes->group('patient', ['filter' => 'auth:patient'], function ($routes) {
-    $routes->get('dashboard',                  'Patient::dashboard');
-    $routes->post('book',                      'Patient::book');
-    $routes->get('queue/(:num)',               'Queue::status/$1');
-    $routes->get('appointments/cancel/(:num)', 'Patient::cancel/$1');
-    $routes->get('check-queue',                'Queue::checkQueue');
-});
-
 // ── ADMIN (login required) ────────────────────────────────
 $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
-    $routes->get('dashboard',               'Admin::index');
-    $routes->get('appointments',            'Admin::appointments');
-    $routes->post('appointments/update',    'Admin::updateStatus');
-    $routes->post('appointments/delete',    'Admin::deleteAppointment');
-    $routes->get('queue',                   'Admin::queue');
-    $routes->post('queue/next',             'Queue::next');
-    $routes->get('users',                   'Admin::users');
-    $routes->get('services',                'Admin::services');
-    $routes->post('services/store',         'Admin::storeService');
-    $routes->post('services/toggle/(:num)', 'Admin::toggleService/$1');
+    $routes->get('/',                           'Admin::index');
+    $routes->get('queue',                       'Admin::queue');
+    $routes->post('queue/next',                 'Admin::callNext');
+    $routes->post('queue/skip',                 'Admin::skipCurrent');
+    $routes->get('services',                    'Admin::services');
+    $routes->post('services/store',             'Admin::storeService');
+    $routes->post('services/toggle/(:num)',     'Admin::toggleService/$1');
 });
