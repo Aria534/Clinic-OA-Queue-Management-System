@@ -4,10 +4,9 @@ $name    = session()->get('name') ?? 'Admin';
 $initials = strtoupper(substr($name, 0, 1) . (strpos($name, ' ') !== false ? substr($name, strpos($name, ' ') + 1, 1) : ''));
 
 $nav_items = [
-  ['id'=>'dashboard',    'label'=>'Dashboard',     'icon'=>'bi-grid-1x2-fill',    'href'=> base_url('admin/dashboard')],
-  ['id'=>'appointments', 'label'=>'Appointments',  'icon'=>'bi-calendar-check',   'href'=> base_url('admin/appointments')],
-  ['id'=>'queue',        'label'=>'Queue Monitor', 'icon'=>'bi-ticket-perforated','href'=> base_url('admin/queue')],
-  ['id'=>'services',     'label'=>'Services',      'icon'=>'bi-clipboard2-pulse', 'href'=> base_url('admin/services')],
+  ['id'=>'dashboard', 'label'=>'Dashboard',     'icon'=>'bi-grid-1x2-fill',     'href'=> base_url('admin/dashboard')],
+  ['id'=>'queue',     'label'=>'Queue Monitor', 'icon'=>'bi-ticket-perforated',  'href'=> base_url('admin/queue')],
+  ['id'=>'services',  'label'=>'Services',      'icon'=>'bi-clipboard2-pulse',   'href'=> base_url('admin/services')],
 ];
 ?>
 <!DOCTYPE html>
@@ -75,11 +74,6 @@ $nav_items = [
       <li class="breadcrumb-item active"><?= ucfirst($page) ?></li>
     </ol>
   </div>
-  <div class="d-flex align-items-center gap-2">
-    <a href="<?= base_url('admin/appointments') ?>" class="btn btn-sm btn-primary">
-      <i class="bi bi-plus-lg me-1"></i> New Appointment
-    </a>
-  </div>
 </nav>
 
 <!-- PAGE CONTENT -->
@@ -141,7 +135,7 @@ $nav_items = [
     </div>
 
     <div class="card shadow-sm border-0">
-      <div class="card-header bg-white fw-semibold">Recent Appointments</div>
+      <div class="card-header bg-white fw-semibold">Today's Queue</div>
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
@@ -163,51 +157,7 @@ $nav_items = [
                 <span class="badge bg-<?= $b ?>"><?= ucfirst($s) ?></span>
               </td>
               <td>
-                <form method="POST" action="<?= base_url('admin/appointments/update') ?>" class="d-inline">
-                  <?= csrf_field() ?>
-                  <input type="hidden" name="id" value="<?= $a['id'] ?>">
-                  <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
-                    <?php foreach (['pending','confirmed','serving','completed','cancelled'] as $opt): ?>
-                    <option value="<?= $opt ?>" <?= $s===$opt?'selected':'' ?>><?= ucfirst($opt) ?></option>
-                    <?php endforeach; ?>
-                  </select>
-                </form>
-              </td>
-            </tr>
-            <?php endforeach; ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== APPOINTMENTS ==================== -->
-    <?php elseif ($page === 'appointments'): ?>
-
-    <div class="card shadow-sm border-0">
-      <div class="card-header bg-white fw-semibold">All Appointments</div>
-      <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr><th>Queue #</th><th>Patient</th><th>Service</th><th>Date</th><th>Status</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-            <?php foreach ($appointments ?? [] as $a): ?>
-            <tr>
-              <td><span class="fw-bold text-primary font-monospace"><?= esc($a['queue_number'] ?? '-') ?></span></td>
-              <td><?= esc($a['patient_name'] ?? $a['name'] ?? '-') ?></td>
-              <td class="text-muted small"><?= esc($a['service'] ?? '-') ?></td>
-              <td class="text-muted small"><?= esc($a['appointment_date'] ?? '-') ?></td>
-              <td>
-                <?php
-                  $s = $a['status'] ?? 'pending';
-                  $b = match($s) { 'confirmed'=>'primary','completed'=>'success','cancelled'=>'danger','serving'=>'info', default=>'warning' };
-                ?>
-                <span class="badge bg-<?= $b ?>"><?= ucfirst($s) ?></span>
-              </td>
-              <td>
-                <form method="POST" action="<?= base_url('admin/appointments/update') ?>" class="d-inline">
+                <form method="POST" action="<?= base_url('admin/queue/update') ?>" class="d-inline">
                   <?= csrf_field() ?>
                   <input type="hidden" name="id" value="<?= $a['id'] ?>">
                   <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
