@@ -2,122 +2,67 @@
 
 namespace App\Controllers;
 
-use App\Models\AppointmentModel;
+use App\Models\QueueTicketModel;
+use App\Models\ServiceModel;
 
 class Queue extends BaseController
 {
-    public function status(int $appointmentId)
+    // ----------------------------------------------------------------
+    // GET / — Walk-in booking form
+    // ----------------------------------------------------------------
+    public function index()
     {
-        $model       = new AppointmentModel();
-        $appointment = $model->getWithDetails($appointmentId);
-
-        if (!$appointment) {
-            return redirect()->to('/')->with('error', 'Queue ticket not found.');
-        }
-
-        $db    = \Config\Database::connect();
-        $ahead = $db->table('appointments')
-            ->where('appointment_date', $appointment['appointment_date'])
-            ->where('queue_number <', $appointment['queue_number'])
-            ->whereIn('status', ['confirmed', 'in_queue', 'pending', 'serving'])
-            ->countAllResults();
-
-        return view('User/queue_ticket', [
-            'appointment' => $appointment,
-            'ahead'       => $ahead,
+        $services = new ServiceModel();
+        return view('queue/book', [
+            'services' => $services->where('is_active', 1)->findAll(),
         ]);
     }
 
-    public function next()
+    // ----------------------------------------------------------------
+    // POST /book — Issue queue number
+    // ----------------------------------------------------------------
+    public function book()
     {
-        $model   = new AppointmentModel();
-        $db      = \Config\Database::connect();
-        $adminId = session()->get('user_id');
-        $today   = date('Y-m-d');
+        $rules = [
+            'patient_name' => 'required|min_length[2]|max_length[100]',
+            'service_id'   => 'required|integer',
+        ];
 
-        // STEP 1: Finish currently serving
-        $current = $model
-            ->where('appointment_date', $today)
-            ->where('status', 'serving')
-            ->first();
-
-        if ($current) {
-            $model->update($current['id'], [
-                'status'      => 'completed',
-                'finished_at' => date('Y-m-d H:i:s'),
-            ]);
-            $this->logQueue($db, $current['id'], 'completed', $adminId);
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()
+                ->with('errors', $this->validator->getErrors());
         }
 
-        // STEP 2: Get next waiting patient
-        $next = $model
-            ->where('appointment_date', $today)
-            ->whereIn('status', ['confirmed', 'in_queue', 'pending'])
-            ->orderBy('queue_number', 'ASC')
-            ->first();
+        $model  = new QueueTicketModel();
+        $number = $model->getNextNumber();
 
-        if (!$next) {
-            return redirect()->to('/admin/queue')
-                ->with('success', 'Queue is empty for today.');
-        }
-
-        $model->update($next['id'], [
-            'status'     => 'serving',
-            'started_at' => date('Y-m-d H:i:s'),
+        $id = $model->insert([
+            'queue_number' => $number,
+            'patient_name' => $this->request->getPost('patient_name'),
+            'service_id'   => $this->request->getPost('service_id'),
+            'status'       => 'waiting',
+            'date'         => date('Y-m-d'),
+            'created_at'   => date('Y-m-d H:i:s'),
         ]);
-        $this->logQueue($db, $next['id'], 'serving', $adminId);
 
-        return redirect()->to('/admin/queue')
-            ->with('success', 'Now Serving #' . $next['queue_number'] . ' — ' . $next['patient_name']);
+        return redirect()->to(base_url('ticket/' . $id));
     }
 
-    public function checkQueue()
+    // ----------------------------------------------------------------
+    // GET /ticket/{id} — Show issued ticket
+    // ----------------------------------------------------------------
+    public function ticket(int $id)
     {
-        $q     = strtoupper(trim($this->request->getGet('q')));
-        $model = new AppointmentModel();
-        $db    = \Config\Database::connect();
-        $today = date('Y-m-d');
+        $model  = new QueueTicketModel();
+        $ticket = $model->select('queue_tickets.*, services.name as service_name')
+                        ->join('services', 'services.id = queue_tickets.service_id', 'left')
+                        ->find($id);
 
-        $num = (int) preg_replace('/\D/', '', $q);
-
-        if (!$num) {
-            return $this->response->setJSON(['found' => false]);
+        if (!$ticket) {
+            return redirect()->to(base_url('/'))
+                ->with('error', 'Ticket not found.');
         }
 
-        $appt = $model
-            ->select('appointments.*, services.name as service_name')
-            ->join('services', 'services.id = appointments.service_id', 'left')
-            ->where('appointments.appointment_date', $today)
-            ->where('appointments.queue_number', $num)
-            ->first();
-
-        if (!$appt) {
-            return $this->response->setJSON(['found' => false]);
-        }
-
-        $ahead = $db->table('appointments')
-            ->where('appointment_date', $today)
-            ->where('queue_number <', $num)
-            ->whereIn('status', ['confirmed', 'in_queue', 'pending', 'serving'])
-            ->countAllResults();
-
-        return $this->response->setJSON([
-            'found'        => true,
-            'queue_number' => $appt['queue_number'],
-            'status'       => $appt['status'],
-            'status_label' => ucfirst(str_replace('_', ' ', $appt['status'])),
-            'service'      => $appt['service_name'] ?? null,
-            'ahead'        => $ahead,
-        ]);
-    }
-
-    private function logQueue($db, int $appointmentId, string $action, ?int $actedBy): void
-    {
-        $db->table('queue_logs')->insert([
-            'appointment_id' => $appointmentId,
-            'action'         => $action,
-            'acted_by'       => $actedBy,
-            'created_at'     => date('Y-m-d H:i:s'),
-        ]);
+        return view('queue/ticket', ['ticket' => $ticket]);
     }
 }
