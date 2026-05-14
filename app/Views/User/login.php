@@ -4,8 +4,6 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login | QueueMed</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --bg:        #f7f4ef;
@@ -23,7 +21,7 @@
 
     body {
       background: var(--bg);
-      font-family: 'DM Sans', sans-serif;
+      font-family: Arial, sans-serif;
       min-height: 100vh;
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -32,33 +30,58 @@
 
     /* ── LEFT PANEL ── */
     .left {
-      background: var(--ink);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 3rem;
       position: relative;
       overflow: hidden;
+      background: #1a0a1e;
     }
 
+    /* Girly gradient background: deep plum + lilac + dusty rose */
     .left-bg {
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 20% 80%, rgba(200,75,47,0.25) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(232,168,124,0.12) 0%, transparent 50%);
+        radial-gradient(ellipse 90% 70% at 10% 100%, rgba(186, 85, 140, 0.45) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 50% at 90% 10%, rgba(147, 99, 186, 0.35) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(218, 143, 175, 0.18) 0%, transparent 60%);
       pointer-events: none;
     }
 
-    /* grid lines decoration */
+    /* Soft shimmer grid */
     .left-grid {
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
       background-size: 48px 48px;
       pointer-events: none;
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(60px);
+    }
+    .orb-1 {
+      width: 260px; height: 260px;
+      background: rgba(200, 100, 160, 0.22);
+      bottom: 80px; left: -60px;
+    }
+    .orb-2 {
+      width: 180px; height: 180px;
+      background: rgba(140, 80, 200, 0.2);
+      top: 60px; right: -40px;
+    }
+    .orb-3 {
+      width: 120px; height: 120px;
+      background: rgba(240, 180, 210, 0.15);
+      top: 42%; left: 55%;
     }
 
     .left-brand {
@@ -71,7 +94,7 @@
 
     .brand-mark {
       width: 42px; height: 42px;
-      background: var(--accent);
+      background: linear-gradient(135deg, #c86aaa, #9b5ec8);
       border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       font-size: 1.2rem;
@@ -79,7 +102,7 @@
     }
 
     .brand-text {
-      font-family: 'Syne', sans-serif;
+      font-family: Arial, sans-serif;
       font-weight: 800;
       font-size: 1.4rem;
       color: #fff;
@@ -103,11 +126,11 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(200,75,47,0.15);
-      border: 1px solid rgba(200,75,47,0.3);
-      color: var(--accent2);
+      background: rgba(200, 100, 160, 0.18);
+      border: 1px solid rgba(200, 100, 160, 0.35);
+      color: #f0b8d8;
       font-size: 0.72rem;
-      font-weight: 500;
+      font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       padding: 0.35rem 0.85rem;
@@ -117,7 +140,7 @@
 
     .left-tag .dot {
       width: 6px; height: 6px;
-      background: var(--accent);
+      background: #e87fbd;
       border-radius: 50%;
       animation: pulse 2s infinite;
     }
@@ -128,18 +151,21 @@
     }
 
     .left-headline {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: clamp(2.4rem, 4vw, 3.4rem);
+      font-family: Arial, sans-serif;
+      font-weight: 900;
+      font-size: clamp(2.8rem, 4.5vw, 4rem);
       line-height: 1.05;
       color: #fff;
-      letter-spacing: -1px;
+      letter-spacing: -2px;
       margin-bottom: 1.25rem;
     }
 
     .left-headline em {
       font-style: normal;
-      color: var(--accent2);
+      background: linear-gradient(120deg, #f0b8d8, #c89ce8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .left-desc {
@@ -148,26 +174,6 @@
       line-height: 1.7;
       max-width: 340px;
     }
-
-    /* stats row */
-    .left-stats {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      gap: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .stat { display: flex; flex-direction: column; gap: 2px; }
-    .stat-n {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -1px;
-    }
-    .stat-l { font-size: 0.7rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.1em; }
 
     /* ── RIGHT PANEL ── */
     .right {
@@ -179,7 +185,6 @@
       position: relative;
     }
 
-    /* subtle texture */
     .right::before {
       content: '';
       position: absolute;
@@ -202,7 +207,7 @@
     }
 
     .form-heading {
-      font-family: 'Syne', sans-serif;
+      font-family: Arial, sans-serif;
       font-weight: 700;
       font-size: 1.9rem;
       color: var(--ink);
@@ -237,10 +242,11 @@
     .field label {
       display: block;
       font-size: 0.8rem;
-      font-weight: 500;
+      font-weight: 700;
       color: var(--ink);
       margin-bottom: 0.45rem;
       letter-spacing: 0.02em;
+      font-family: Arial, sans-serif;
     }
 
     .input-wrap {
@@ -258,10 +264,18 @@
       line-height: 1;
     }
 
+    /* email field has icon, password field does NOT */
+    .input-wrap input.with-icon {
+      padding: 0.8rem 1rem 0.8rem 2.65rem;
+    }
+
+    .input-wrap input.no-icon {
+      padding: 0.8rem 2.65rem 0.8rem 1rem;
+    }
+
     .input-wrap input {
       width: 100%;
-      padding: 0.8rem 1rem 0.8rem 2.65rem;
-      font-family: 'DM Sans', sans-serif;
+      font-family: Arial, sans-serif;
       font-size: 0.92rem;
       color: var(--ink);
       background: var(--panel);
@@ -272,8 +286,8 @@
     }
 
     .input-wrap input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(200,75,47,0.1);
+      border-color: #c86aaa;
+      box-shadow: 0 0 0 3px rgba(200, 106, 170, 0.12);
     }
 
     .input-wrap input::placeholder { color: #c4bfb9; }
@@ -308,19 +322,21 @@
       font-size: 0.83rem;
       color: var(--muted);
       user-select: none;
+      font-family: Arial, sans-serif;
     }
 
     .check-label input[type="checkbox"] {
       width: 15px; height: 15px;
-      accent-color: var(--accent);
+      accent-color: #c86aaa;
       cursor: pointer;
     }
 
     .forgot {
       font-size: 0.83rem;
-      color: var(--accent);
+      color: #c84b2f;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 700;
+      font-family: Arial, sans-serif;
     }
     .forgot:hover { text-decoration: underline; }
 
@@ -330,7 +346,7 @@
       padding: 0.9rem;
       background: var(--ink);
       color: #fff;
-      font-family: 'Syne', sans-serif;
+      font-family: Arial, sans-serif;
       font-weight: 700;
       font-size: 0.95rem;
       letter-spacing: 0.05em;
@@ -357,9 +373,9 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 1rem;
-      color: var(--border);
       font-size: 0.75rem;
       color: var(--muted);
+      font-family: Arial, sans-serif;
     }
     .divider::before, .divider::after {
       content: '';
@@ -374,7 +390,7 @@
       padding: 0.85rem;
       background: transparent;
       color: var(--ink);
-      font-family: 'DM Sans', sans-serif;
+      font-family: Arial, sans-serif;
       font-weight: 500;
       font-size: 0.88rem;
       border: 1.5px solid var(--border);
@@ -399,6 +415,7 @@
       font-size: 0.72rem;
       color: var(--muted);
       text-align: center;
+      font-family: Arial, sans-serif;
     }
 
     /* responsive */
@@ -415,6 +432,9 @@
 <div class="left">
   <div class="left-bg"></div>
   <div class="left-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
 
   <div class="left-brand">
     <div class="brand-mark">🏥</div>
@@ -430,28 +450,15 @@
       System Online
     </div>
     <h1 class="left-headline">
-      Smarter queues.<br/>
-      <em>Faster care.</em>
+      <em>QueueMed</em>
     </h1>
     <p class="left-desc">
       Manage patient flow in real-time. Reduce wait times, improve experience, and keep your clinic running smoothly.
     </p>
   </div>
 
-  <div class="left-stats">
-    <div class="stat">
-      <span class="stat-n">98%</span>
-      <span class="stat-l">Uptime</span>
-    </div>
-    <div class="stat">
-      <span class="stat-n">3×</span>
-      <span class="stat-l">Faster flow</span>
-    </div>
-    <div class="stat">
-      <span class="stat-n">Real-time</span>
-      <span class="stat-l">Updates</span>
-    </div>
-  </div>
+  <!-- stats row removed -->
+  <div></div>
 </div>
 
 <!-- ── RIGHT ── -->
@@ -492,7 +499,7 @@
         <label>Email Address</label>
         <div class="input-wrap">
           <span class="input-icon">✉</span>
-          <input type="email" name="email" placeholder="you@clinic.com"
+          <input type="email" name="email" class="with-icon" placeholder="you@clinic.com"
             value="<?= old('email') ?>" required autofocus/>
         </div>
       </div>
@@ -500,8 +507,8 @@
       <div class="field">
         <label>Password</label>
         <div class="input-wrap">
-          <span class="input-icon">🔒</span>
-          <input type="password" name="password" id="password"
+          <!-- No lock icon, clean input -->
+          <input type="password" name="password" id="password" class="no-icon"
             placeholder="Enter your password" required/>
           <button type="button" class="pw-toggle" id="togglePw" title="Show/hide password">
             <span id="eyeIcon">👁</span>
@@ -518,14 +525,14 @@
       </div>
 
       <button type="submit" class="btn-login">
-        Sign In →
+        Login
       </button>
     </form>
 
     <div class="divider">or</div>
 
     <a href="<?= base_url('/') ?>" class="btn-patient">
-      🎫 Get Queue Number (Patient)
+      Get Queue Number (Patient)
     </a>
 
     <div class="form-footer">
