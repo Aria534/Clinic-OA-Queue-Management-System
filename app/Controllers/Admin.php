@@ -2,99 +2,112 @@
 
 namespace App\Controllers;
 
-use App\Models\AppointmentModel;
-use App\Models\UserModel;
+use App\Models\QueueTicketModel;
 use App\Models\ServiceModel;
 
 class Admin extends BaseController
 {
+    // ----------------------------------------------------------------
+    // Dashboard
+    // ----------------------------------------------------------------
     public function index()
     {
-        $apptModel = new AppointmentModel();
-        $userModel = new UserModel();
-
-        $today    = date('Y-m-d');
-        $allAppts = $apptModel->getWithDetails();
+        $model = new QueueTicketModel();
+        $stats = $model->getTodayStats();
 
         return view('admin/dashboard', [
-            'page'            => 'dashboard',
-            'total_today'     => count(array_filter($allAppts, fn($a) => $a['appointment_date'] === $today)),
-            'pending_count'   => count(array_filter($allAppts, fn($a) => $a['status'] === 'pending')),
-            'serving_count'   => count(array_filter($allAppts, fn($a) => $a['status'] === 'serving')),
-            'completed_today' => count(array_filter($allAppts, fn($a) => $a['appointment_date'] === $today && $a['status'] === 'completed')),
-            'total_patients'  => $userModel->where('role', 'patient')->countAllResults(),
-            'recent_appts'    => array_slice($allAppts, 0, 10),
+            'page'    => 'dashboard',
+            'stats'   => $stats,
+            'queue'   => $model->getTodayQueue(),
+            'serving' => $model->getCurrentlyServing(),
         ]);
     }
 
-    public function appointments()
-    {
-        $model = new AppointmentModel();
-        return view('admin/dashboard', [
-            'page'         => 'appointments',
-            'appointments' => $model->getWithDetails(),
-        ]);
-    }
-
-    public function updateStatus()
-    {
-        $id      = $this->request->getPost('id');
-        $status  = $this->request->getPost('status');
-        $allowed = ['pending', 'confirmed', 'in_queue', 'serving', 'completed', 'cancelled'];
-
-        if (!in_array($status, $allowed)) {
-            return redirect()->back()->with('error', 'Invalid status.');
-        }
-
-        $model = new AppointmentModel();
-
-        // AUTO-DELETE pag completed or cancelled
-        if (in_array($status, ['completed', 'cancelled'])) {
-            $model->delete($id);
-            return redirect()->back()->with('success', 'Appointment completed and removed.');
-        }
-
-        $model->update($id, ['status' => $status]);
-
-        return redirect()->back()->with('success', 'Status updated.');
-    }
-
+    // ----------------------------------------------------------------
+    // Queue Monitor page
+    // ----------------------------------------------------------------
     public function queue()
     {
-        $model = new AppointmentModel();
+        $model = new QueueTicketModel();
         return view('admin/dashboard', [
-            'page'  => 'queue',
-            'queue' => $model->getTodayQueue(),
+            'page'    => 'queue',
+            'queue'   => $model->getTodayQueue(),
+            'serving' => $model->getCurrentlyServing(),
+            'stats'   => $model->getTodayStats(),
         ]);
     }
 
-    public function nextQueue()
+    // ----------------------------------------------------------------
+    // Public Display Screen (TV/Monitor para sa waiting area)
+    // ----------------------------------------------------------------
+    public function displayScreen()
     {
-        $model = new AppointmentModel();
-        $model->where('status', 'serving')->set(['status' => 'completed'])->update();
+        return view('queue/display');
+    }
 
-        $next = $model->where('appointment_date', date('Y-m-d'))
-            ->whereIn('status', ['confirmed', 'in_queue'])
-            ->orderBy('queue_number', 'ASC')
-            ->first();
+    // ----------------------------------------------------------------
+    // POST /admin/queue/next — Call next patient
+    // ----------------------------------------------------------------
+    public function callNext()
+    {
+        $model = new QueueTicketModel();
+        $now   = date('Y-m-d H:i:s');
 
+        // Complete currently serving
+        $current = $model->getCurrentlyServing();
+        if ($current) {
+            $model->update($current['id'], [
+                'status'       => 'completed',
+                'completed_at' => $now,
+            ]);
+        }
+
+        // Serve next waiting
+        $next = $model->getNextWaiting();
+        if (!$next) {
+            return redirect()->to('/admin/queue')
+                ->with('info', 'No more patients in queue.');
+        }
+
+        $model->update($next['id'], [
+            'status'    => 'serving',
+            'called_at' => $now,
+        ]);
+
+        return redirect()->to('/admin/queue')
+            ->with('success', 'Now serving #' . str_pad($next['queue_number'], 3, '0', STR_PAD_LEFT)
+                . ' — ' . $next['patient_name']);
+    }
+
+    // ----------------------------------------------------------------
+    // POST /admin/queue/skip — Skip current patient
+    // ----------------------------------------------------------------
+    public function skipCurrent()
+    {
+        $model   = new QueueTicketModel();
+        $current = $model->getCurrentlyServing();
+
+        if ($current) {
+            $model->update($current['id'], ['status' => 'skipped']);
+        }
+
+        $next = $model->getNextWaiting();
         if ($next) {
-            $model->update($next['id'], ['status' => 'serving']);
+            $model->update($next['id'], [
+                'status'    => 'serving',
+                'called_at' => date('Y-m-d H:i:s'),
+            ]);
+            return redirect()->to('/admin/queue')
+                ->with('success', 'Skipped. Now serving #' . str_pad($next['queue_number'], 3, '0', STR_PAD_LEFT));
         }
 
         return redirect()->to('/admin/queue')
-            ->with('success', $next ? 'Now serving #' . $next['queue_number'] : 'Queue is empty.');
+            ->with('info', 'Queue is now empty.');
     }
 
-    public function users()
-    {
-        $model = new UserModel();
-        return view('admin/dashboard', [
-            'page'  => 'users',
-            'users' => $model->where('role', 'patient')->findAll(),
-        ]);
-    }
-
+    // ----------------------------------------------------------------
+    // Services
+    // ----------------------------------------------------------------
     public function services()
     {
         $model = new ServiceModel();
@@ -132,63 +145,5 @@ class Admin extends BaseController
         $service = $model->find($id);
         $model->update($id, ['is_active' => $service['is_active'] ? 0 : 1]);
         return redirect()->back()->with('success', 'Service updated.');
-    }
-
-    public function deleteAppointment()
-    {
-        $id = $this->request->getPost('id');
-
-        if (!$id) {
-            return redirect()->back()->with('error', 'Invalid appointment.');
-        }
-
-        $model = new AppointmentModel();
-        $appt  = $model->find($id);
-
-        if (!$appt) {
-            return redirect()->back()->with('error', 'Appointment not found.');
-        }
-
-        $model->delete($id);
-
-        return redirect()->back()->with('success', 'Appointment deleted successfully.');
-    }
-
-    public function display()
-    {
-        $model = new AppointmentModel();
-        $today = date('Y-m-d');
-
-        $serving = $model
-            ->select('appointments.*, services.name as service_name')
-            ->join('services', 'services.id = appointments.service_id', 'left')
-            ->where('appointment_date', $today)
-            ->where('status', 'serving')
-            ->first();
-
-        $queue = $model
-            ->select('appointments.*, services.name as service_name')
-            ->join('services', 'services.id = appointments.service_id', 'left')
-            ->where('appointment_date', $today)
-            ->whereNotIn('status', ['completed', 'cancelled'])
-            ->orderBy('queue_number', 'ASC')
-            ->findAll();
-
-        $waiting = $model
-            ->where('appointment_date', $today)
-            ->whereIn('status', ['confirmed', 'in_queue', 'pending'])
-            ->countAllResults();
-
-        $completed = $model
-            ->where('appointment_date', $today)
-            ->where('status', 'completed')
-            ->countAllResults();
-
-        return view('User/queue_display', [
-            'serving'   => $serving,
-            'queue'     => $queue,
-            'waiting'   => $waiting,
-            'completed' => $completed,
-        ]);
     }
 }
