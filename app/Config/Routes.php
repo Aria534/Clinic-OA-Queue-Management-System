@@ -5,9 +5,13 @@ use CodeIgniter\Router\RouteCollection;
 /** @var RouteCollection $routes */
 
 // ── PUBLIC — Walk-in queue (no login required) ────────────
-$routes->get('/',               'Queue::index');       // booking form
-$routes->post('book',           'Queue::book');        // submit → get number
-$routes->get('ticket/(:num)',   'Queue::ticket/$1');   // show issued ticket
+$routes->get('/',               'Queue::index');
+$routes->post('book',           'Queue::book');
+$routes->get('ticket/(:num)',   'Queue::ticket/$1');
+
+// ── PUBLIC DISPLAY (TV screen — no login required) ────────
+$routes->get('display',             'Admin::displayScreen');
+$routes->get('api/display',         'Api::display');
 
 // ── AUTH ──────────────────────────────────────────────────
 $routes->get('login',  'Auth::index');
