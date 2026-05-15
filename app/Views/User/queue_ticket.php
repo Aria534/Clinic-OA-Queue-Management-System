@@ -8,12 +8,12 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
   <style>
     :root {
-      --nb: #4a2c0a;
-      --nb-mid: #7a4a1e;
-      --nb-light: #f5ede0;
-      --nb-border: #e0c8a0;
+      --sg: #8a9e7e;
+      --sg-dark: #6b7d61;
+      --sg-light: #f0f4ee;
+      --sg-border: #d4dece;
     }
-    body { background: #f5ede0; }
+    body { background: linear-gradient(135deg, #e8ede5 0%, #f0f4ee 100%); min-height: 100vh; }
 
     .queue-number { font-size: 6rem; font-weight: 800; line-height: 1; }
 
@@ -29,7 +29,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(74, 44, 10, 0.97);
+      background: rgba(107, 125, 97, 0.97);
       z-index: 9999;
       flex-direction: column;
       align-items: center;
@@ -57,7 +57,7 @@
     .overlay-sub   { font-size: 1.1rem; color: rgba(255,255,255,0.8); margin-bottom: 2rem; }
     .overlay-dismiss {
       background: #fff;
-      color: var(--nb);
+      color: var(--sg-dark);
       border: none;
       font-weight: 700;
       font-size: 1rem;
@@ -66,27 +66,27 @@
       cursor: pointer;
       box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
-    .overlay-dismiss:hover { background: var(--nb-light); }
+    .overlay-dismiss:hover { background: var(--sg-light); }
 
     .card { border-radius: 1.5rem !important; }
 
     /* navbar brand */
-    .navbar-brand { color: var(--nb) !important; }
+    .navbar-brand { color: var(--sg-dark) !important; }
 
     /* card header */
-    .card-header-brown { background: linear-gradient(135deg, var(--nb) 0%, var(--nb-mid) 100%) !important; }
+    .card-header-brown { background: linear-gradient(135deg, var(--sg-dark) 0%, var(--sg) 100%) !important; }
 
     /* queue number & icon default color */
-    .text-node-brown { color: var(--nb) !important; }
+    .text-node-brown { color: var(--sg-dark) !important; }
 
     /* buttons */
     .btn-brown {
-      background: linear-gradient(135deg, var(--nb) 0%, var(--nb-mid) 100%);
+      background: linear-gradient(135deg, var(--sg-dark) 0%, var(--sg) 100%);
       border: none; color: #fff; font-weight: 600;
     }
     .btn-brown:hover {
-      background: linear-gradient(135deg, #3a1f05 0%, var(--nb) 100%);
-      color: #fff; box-shadow: 0 4px 14px rgba(74,44,10,0.35);
+      background: linear-gradient(135deg, #4a5e42 0%, var(--sg-dark) 100%);
+      color: #fff; box-shadow: 0 4px 14px rgba(107,125,97,0.4);
     }
   </style>
 </head>
@@ -287,7 +287,7 @@ function updateUI(data) {
     icon.innerHTML          = '<i class="bi bi-hourglass-split text-node-brown" style="font-size:4rem;"></i>';
     statsRow.classList.remove('d-none');
     card.classList.remove('serving-glow');
-    header.style.background = '#0d6efd';
+    header.style.background = 'linear-gradient(135deg, #6b7d61 0%, #8a9e7e 100%)';
     queueNum.className      = 'queue-number text-primary my-3';
 
     if (ahead === 0) {

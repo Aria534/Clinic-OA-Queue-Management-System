@@ -28,7 +28,7 @@ class Database extends Config
         'DSN'          => '',
         'hostname'     => 'localhost',
         'username'     => 'root',
-        'password'     => 'admin',
+        'password'     => '',
         'database'     => 'clinic_db',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
