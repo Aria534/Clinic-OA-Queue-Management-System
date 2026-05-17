@@ -1,400 +1,324 @@
--- ============================================================================
--- CLINIC QUEUE MANAGEMENT SYSTEM (CLINIC-QMS) - PRODUCTION DATABASE SCHEMA
--- ============================================================================
--- Framework: CodeIgniter 4
--- Database: MySQL 5.7+, MySQL 8.0+, MariaDB
--- Compatible: PostgreSQL (with minor adjustments), Supabase
--- Author: Database Analysis
--- Generated: May 15, 2026
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
 --
--- INSTRUCTIONS:
--- 1. Copy entire content
--- 2. Paste into MySQL/Supabase console
--- 3. Ensure you're in the correct database (USE clinic_db;)
--- 4. Execute all statements
+-- Host: 127.0.0.1
+-- Generation Time: May 15, 2026 at 03:25 AM
+-- Server version: 8.0.45
+-- PHP Version: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
--- For PostgreSQL/Supabase:
--- - Replace INT UNSIGNED with SERIAL
--- - Replace DATETIME with TIMESTAMP
--- - Replace AUTO_INCREMENT with serial
--- - Replace ENUM with VARCHAR or custom TYPE
--- ============================================================================
+-- Database: `clinic_db`
+--
 
--- ============================================================================
--- DROP EXISTING TABLES (if re-running)
--- ============================================================================
--- UNCOMMENT ONLY IF YOU WANT TO RESET THE DATABASE
--- WARNING: This will delete all data!
+-- --------------------------------------------------------
 
-/*
-SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS queue_logs;
-DROP TABLE IF EXISTS appointments;
-DROP TABLE IF EXISTS schedules;
-DROP TABLE IF EXISTS services;
-DROP TABLE IF EXISTS users;
-SET FOREIGN_KEY_CHECKS = 1;
-*/
+--
+-- Table structure for table `appointments`
+--
 
--- ============================================================================
--- CREATE DATABASE
--- ============================================================================
--- Uncomment if database doesn't exist
--- CREATE DATABASE IF NOT EXISTS clinic_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
--- USE clinic_db;
+CREATE TABLE `appointments` (
+  `id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED DEFAULT NULL,
+  `patient_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `patient_email` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `service_id` int UNSIGNED NOT NULL,
+  `appointment_date` date NOT NULL,
+  `appointment_time` time NOT NULL,
+  `queue_number` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `status` enum('pending','confirmed','in_queue','serving','completed','cancelled') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending',
+  `started_at` datetime DEFAULT NULL,
+  `finished_at` datetime DEFAULT NULL,
+  `notes` text COLLATE utf8mb4_general_ci,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- ============================================================================
--- TABLE 1: USERS - User Authentication & Role Management
--- ============================================================================
+--
+-- Dumping data for table `appointments`
+--
 
-CREATE TABLE IF NOT EXISTS users (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT 'Unique user identifier',
-    name VARCHAR(100) NOT NULL COMMENT 'Full name of user',
-    email VARCHAR(100) NOT NULL UNIQUE COMMENT 'Email address - unique for login',
-    password VARCHAR(255) NOT NULL COMMENT 'Hashed password (PASSWORD_DEFAULT)',
-    phone VARCHAR(20) NULL DEFAULT NULL COMMENT 'Contact phone number',
-    role ENUM('patient', 'admin', 'doctor') NOT NULL DEFAULT 'patient' COMMENT 'User role/permission level',
-    is_active TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Whether user account is active',
-    created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Account creation timestamp',
-    updated_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last profile update',
-    
-    KEY idx_email (email),
-    KEY idx_role (role),
-    KEY idx_is_active (is_active),
-    KEY idx_created_at (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
-COMMENT='User accounts and authentication';
+INSERT INTO `appointments` (`id`, `user_id`, `patient_name`, `patient_email`, `service_id`, `appointment_date`, `appointment_time`, `queue_number`, `status`, `started_at`, `finished_at`, `notes`, `created_at`, `updated_at`) VALUES
+(20, NULL, 'Leizl Casilao', NULL, 2, '2026-04-07', '10:08:04', 'D-001', 'completed', '2026-04-07 10:09:23', '2026-04-07 10:25:22', NULL, '2026-04-07 10:08:04', '2026-04-07 10:25:22'),
+(21, NULL, 'wertyuiokjhgfd', NULL, 2, '2026-04-07', '10:10:09', 'D-002', 'completed', '2026-04-07 10:25:25', '2026-04-07 10:25:29', NULL, '2026-04-07 10:10:09', '2026-04-07 10:25:29'),
+(22, NULL, '\';lkjhgvfcx', NULL, 1, '2026-04-07', '10:10:35', 'G-001', 'completed', '2026-04-07 10:25:29', '2026-04-07 10:26:05', NULL, '2026-04-07 10:10:35', '2026-04-07 10:26:05'),
+(23, NULL, 'Jela Jeminez', NULL, 3, '2026-04-07', '10:25:01', 'B-001', 'completed', '2026-04-07 10:25:22', '2026-04-07 10:25:25', NULL, '2026-04-07 10:25:01', '2026-04-07 10:25:25'),
+(24, NULL, 'Leizl C. Lintag', NULL, 1, '2026-04-07', '10:26:59', 'G-002', 'serving', NULL, NULL, NULL, '2026-04-07 10:26:59', '2026-04-07 10:27:14'),
+(25, NULL, 'Hazel Faith Acierto', NULL, 2, '2026-04-07', '10:28:14', 'D-003', 'serving', NULL, NULL, NULL, '2026-04-07 10:28:14', '2026-04-07 10:28:30'),
+(26, NULL, 'Aira Verola', NULL, 3, '2026-04-07', '10:29:00', 'B-002', 'serving', NULL, NULL, NULL, '2026-04-07 10:29:00', '2026-04-07 10:29:14');
 
--- ============================================================================
--- TABLE 2: SERVICES - Clinic Services & Departments
--- ============================================================================
+-- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS services (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT 'Unique service identifier',
-    name VARCHAR(100) NOT NULL COMMENT 'Service name (e.g., General Consultation)',
-    department_code VARCHAR(10) NULL DEFAULT 'G' COMMENT 'Department code for queue prefix (e.g., OPD, LAB)',
-    description TEXT NULL DEFAULT NULL COMMENT 'Service description and details',
-    duration INT NOT NULL DEFAULT 30 COMMENT 'Estimated duration in minutes',
-    is_active TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Whether service is available for booking',
-    created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Service creation timestamp',
-    updated_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last update timestamp',
-    
-    KEY idx_is_active (is_active),
-    KEY idx_department_code (department_code),
-    KEY idx_created_at (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
-COMMENT='Clinic services and departments';
+--
+-- Table structure for table `migrations`
+--
 
--- ============================================================================
--- TABLE 3: SCHEDULES - Operating Hours & Availability
--- ============================================================================
+CREATE TABLE `migrations` (
+  `id` bigint UNSIGNED NOT NULL,
+  `version` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `class` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `group` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `namespace` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `time` int NOT NULL,
+  `batch` int UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS schedules (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT 'Unique schedule entry',
-    day_of_week TINYINT(1) NOT NULL COMMENT '1=Sunday, 2=Monday, ... 7=Saturday',
-    open_time TIME NOT NULL COMMENT 'Opening time (e.g., 09:00:00)',
-    close_time TIME NOT NULL COMMENT 'Closing time (e.g., 17:00:00)',
-    is_open TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Whether clinic is open on this day',
-    created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Schedule creation timestamp',
-    updated_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last update timestamp',
-    
-    UNIQUE KEY unique_day (day_of_week),
-    KEY idx_is_open (is_open)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
-COMMENT='Clinic operating hours by day of week';
+--
+-- Dumping data for table `migrations`
+--
 
--- ============================================================================
--- TABLE 4: APPOINTMENTS - Appointment Bookings & Queue Management
--- ============================================================================
+INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`, `batch`) VALUES
+(1, '2026-03-28-000001', 'App\\Database\\Migrations\\CreateUsersTable', 'default', 'App', 1774667519, 1),
+(2, '2026-03-28-000002', 'App\\Database\\Migrations\\CreateServicesTable', 'default', 'App', 1774667519, 1),
+(3, '2026-03-28-000003', 'App\\Database\\Migrations\\CreateAppointmentsTable', 'default', 'App', 1774667519, 1),
+(4, '2026-03-28-000004', 'App\\Database\\Migrations\\CreateQueueLogsTable', 'default', 'App', 1774667519, 1),
+(5, '2026-03-28-000005', 'App\\Database\\Migrations\\CreateSchedulesTable', 'default', 'App', 1774667519, 1);
 
-CREATE TABLE IF NOT EXISTS appointments (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT 'Unique appointment identifier',
-    user_id INT UNSIGNED NULL DEFAULT NULL COMMENT 'Link to users table (NULL for guest bookings)',
-    patient_name VARCHAR(100) NULL DEFAULT NULL COMMENT 'Patient name (for guests or override)',
-    patient_email VARCHAR(150) NULL DEFAULT NULL COMMENT 'Patient email (for guests or override)',
-    patient_contact VARCHAR(20) NULL DEFAULT NULL COMMENT 'Patient contact number',
-    service_id INT UNSIGNED NOT NULL COMMENT 'Link to services (what service being booked)',
-    appointment_date DATE NOT NULL COMMENT 'Date of appointment',
-    appointment_time TIME NOT NULL COMMENT 'Time of appointment',
-    queue_number VARCHAR(20) NOT NULL DEFAULT '0' COMMENT 'Queue number (e.g., OPD-001, LAB-002)',
-    status ENUM('pending', 'confirmed', 'in_queue', 'serving', 'completed', 'cancelled') 
-           NOT NULL DEFAULT 'pending' COMMENT 'Appointment status',
-    notes TEXT NULL DEFAULT NULL COMMENT 'Additional notes or special requirements',
-    started_at DATETIME NULL DEFAULT NULL COMMENT 'When patient started being served',
-    finished_at DATETIME NULL DEFAULT NULL COMMENT 'When appointment/service was completed',
-    created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Booking creation time',
-    updated_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last status update',
-    
-    CONSTRAINT fk_appointments_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_appointments_service FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    
-    KEY idx_appointment_date (appointment_date),
-    KEY idx_status (status),
-    KEY idx_queue_number (queue_number),
-    KEY idx_user_id (user_id),
-    KEY idx_service_id (service_id),
-    KEY idx_date_status (appointment_date, status),
-    KEY idx_date_queue_status (appointment_date, queue_number, status),
-    KEY idx_user_date (user_id, appointment_date),
-    FULLTEXT KEY ft_patient_name (patient_name),
-    FULLTEXT KEY ft_patient_email (patient_email)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
-COMMENT='Appointment bookings with queue management';
+-- --------------------------------------------------------
 
--- ============================================================================
--- TABLE 5: QUEUE_LOGS - Audit Trail & Queue Actions
--- ============================================================================
+--
+-- Table structure for table `queue_logs`
+--
 
-CREATE TABLE IF NOT EXISTS queue_logs (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT 'Unique log entry',
-    appointment_id INT UNSIGNED NOT NULL COMMENT 'Link to appointment',
-    action ENUM('called', 'serving', 'completed', 'skipped') NOT NULL COMMENT 'Queue action type',
-    acted_by INT UNSIGNED NULL DEFAULT NULL COMMENT 'User ID of admin/staff who performed action',
-    created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Action timestamp',
-    
-    CONSTRAINT fk_queue_logs_appointment FOREIGN KEY (appointment_id) REFERENCES appointments(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_queue_logs_user FOREIGN KEY (acted_by) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    
-    KEY idx_appointment_id (appointment_id),
-    KEY idx_action (action),
-    KEY idx_acted_by (acted_by),
-    KEY idx_created_at (created_at),
-    KEY idx_date_action (DATE(created_at), action)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
-COMMENT='Audit log for queue actions and state changes';
+CREATE TABLE `queue_logs` (
+  `id` int UNSIGNED NOT NULL,
+  `appointment_id` int UNSIGNED NOT NULL,
+  `action` enum('called','serving','completed','skipped') COLLATE utf8mb4_general_ci NOT NULL,
+  `acted_by` int UNSIGNED DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- ============================================================================
--- VIEWS - Useful for Dashboards and Reporting
--- ============================================================================
+--
+-- Dumping data for table `queue_logs`
+--
 
--- View 1: Daily Queue Summary
-DROP VIEW IF EXISTS daily_queue_summary;
-CREATE VIEW daily_queue_summary AS
-SELECT 
-    DATE(a.appointment_date) AS appointment_date,
-    s.id AS service_id,
-    s.name AS service_name,
-    s.department_code,
-    COUNT(CASE WHEN a.status = 'completed' THEN 1 END) AS completed_count,
-    COUNT(CASE WHEN a.status = 'pending' THEN 1 END) AS pending_count,
-    COUNT(CASE WHEN a.status = 'in_queue' THEN 1 END) AS in_queue_count,
-    COUNT(CASE WHEN a.status = 'serving' THEN 1 END) AS serving_count,
-    COUNT(CASE WHEN a.status = 'cancelled' THEN 1 END) AS cancelled_count,
-    COUNT(*) AS total_appointments,
-    AVG(TIMESTAMPDIFF(MINUTE, a.started_at, a.finished_at)) AS avg_service_time_minutes
-FROM appointments a
-LEFT JOIN services s ON a.service_id = s.id
-WHERE a.appointment_date <= CURDATE()
-GROUP BY DATE(a.appointment_date), s.id, s.name, s.department_code;
+INSERT INTO `queue_logs` (`id`, `appointment_id`, `action`, `acted_by`, `created_at`) VALUES
+(23, 20, 'serving', 1, '2026-04-07 10:09:23'),
+(24, 20, 'completed', 1, '2026-04-07 10:25:22'),
+(25, 23, 'serving', 1, '2026-04-07 10:25:22'),
+(26, 23, 'completed', 1, '2026-04-07 10:25:25'),
+(27, 21, 'serving', 1, '2026-04-07 10:25:25'),
+(28, 21, 'completed', 1, '2026-04-07 10:25:29'),
+(29, 22, 'serving', 1, '2026-04-07 10:25:29'),
+(30, 22, 'completed', 1, '2026-04-07 10:26:05');
 
--- View 2: Patient Appointment Summary
-DROP VIEW IF EXISTS patient_appointment_summary;
-CREATE VIEW patient_appointment_summary AS
-SELECT 
-    u.id AS patient_id,
-    u.name AS patient_name,
-    u.email,
-    u.phone,
-    COUNT(*) AS total_appointments,
-    COUNT(CASE WHEN a.appointment_date >= CURDATE() THEN 1 END) AS upcoming_appointments,
-    COUNT(CASE WHEN a.appointment_date < CURDATE() AND a.status = 'completed' THEN 1 END) AS completed_appointments,
-    COUNT(CASE WHEN a.status = 'cancelled' THEN 1 END) AS cancelled_appointments,
-    MAX(a.appointment_date) AS last_appointment_date
-FROM users u
-LEFT JOIN appointments a ON u.id = a.user_id
-WHERE u.role = 'patient'
-GROUP BY u.id, u.name, u.email, u.phone;
+-- --------------------------------------------------------
 
--- View 3: Queue Performance Metrics
-DROP VIEW IF EXISTS queue_performance_metrics;
-CREATE VIEW queue_performance_metrics AS
-SELECT 
-    DATE(a.appointment_date) AS appointment_date,
-    s.id AS service_id,
-    s.name AS service_name,
-    COUNT(*) AS total_processed,
-    ROUND(AVG(TIMESTAMPDIFF(MINUTE, a.started_at, a.finished_at)), 2) AS avg_service_minutes,
-    MIN(TIMESTAMPDIFF(MINUTE, a.started_at, a.finished_at)) AS min_service_minutes,
-    MAX(TIMESTAMPDIFF(MINUTE, a.started_at, a.finished_at)) AS max_service_minutes,
-    COUNT(CASE WHEN TIMESTAMPDIFF(MINUTE, a.appointment_time, a.started_at) > 15 THEN 1 END) AS delayed_start_count
-FROM appointments a
-LEFT JOIN services s ON a.service_id = s.id
-WHERE a.status = 'completed' AND a.started_at IS NOT NULL AND a.finished_at IS NOT NULL
-GROUP BY DATE(a.appointment_date), s.id, s.name;
+--
+-- Table structure for table `queue_tickets`
+--
 
--- ============================================================================
--- STORED PROCEDURES - Useful for Common Operations
--- ============================================================================
+CREATE TABLE `queue_tickets` (
+  `id` int UNSIGNED NOT NULL,
+  `queue_number` int UNSIGNED NOT NULL,
+  `patient_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `service_id` int UNSIGNED NOT NULL,
+  `status` enum('waiting','serving','completed','skipped') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'waiting',
+  `date` date NOT NULL,
+  `called_at` datetime DEFAULT NULL,
+  `completed_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Procedure 1: Get next queue number for a date and service
-DELIMITER //
+--
+-- Dumping data for table `queue_tickets`
+--
 
-DROP PROCEDURE IF EXISTS GetNextQueueNumber //
+INSERT INTO `queue_tickets` (`id`, `queue_number`, `patient_name`, `service_id`, `status`, `date`, `called_at`, `completed_at`, `created_at`) VALUES
+(1, 1, 'Aira P. Verola', 1, 'serving', '2026-05-14', '2026-05-14 19:28:43', NULL, '2026-05-14 19:28:00');
 
-CREATE PROCEDURE GetNextQueueNumber(
-    IN p_appointment_date DATE,
-    IN p_service_id INT,
-    OUT p_queue_number VARCHAR(20)
-)
-BEGIN
-    DECLARE v_max_num INT;
-    DECLARE v_dept_code VARCHAR(10);
-    
-    -- Get department code
-    SELECT COALESCE(department_code, 'G') INTO v_dept_code 
-    FROM services WHERE id = p_service_id LIMIT 1;
-    
-    -- Get max queue number for this date
-    SELECT MAX(CAST(SUBSTRING(queue_number, LOCATE('-', queue_number) + 1) AS UNSIGNED)) 
-    INTO v_max_num
-    FROM appointments 
-    WHERE appointment_date = p_appointment_date 
-    AND queue_number LIKE CONCAT(v_dept_code, '-%');
-    
-    SET v_max_num = IFNULL(v_max_num, 0) + 1;
-    SET p_queue_number = CONCAT(v_dept_code, '-', LPAD(v_max_num, 3, '0'));
-END //
+-- --------------------------------------------------------
 
-DELIMITER ;
+--
+-- Table structure for table `schedules`
+--
 
--- Procedure 2: Mark appointment as serving
-DELIMITER //
+CREATE TABLE `schedules` (
+  `id` int UNSIGNED NOT NULL,
+  `day_of_week` tinyint(1) NOT NULL,
+  `open_time` time NOT NULL,
+  `close_time` time NOT NULL,
+  `is_open` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-DROP PROCEDURE IF EXISTS MarkAppointmentServing //
+-- --------------------------------------------------------
 
-CREATE PROCEDURE MarkAppointmentServing(
-    IN p_appointment_id INT,
-    IN p_acted_by INT
-)
-BEGIN
-    UPDATE appointments 
-    SET status = 'serving', started_at = NOW() 
-    WHERE id = p_appointment_id;
-    
-    INSERT INTO queue_logs (appointment_id, action, acted_by, created_at) 
-    VALUES (p_appointment_id, 'serving', p_acted_by, NOW());
-END //
+--
+-- Table structure for table `services`
+--
 
-DELIMITER ;
+CREATE TABLE `services` (
+  `id` int UNSIGNED NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text COLLATE utf8mb4_general_ci,
+  `duration` int NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `department_code` varchar(5) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'G'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Procedure 3: Complete appointment
-DELIMITER //
+--
+-- Dumping data for table `services`
+--
 
-DROP PROCEDURE IF EXISTS CompleteAppointment //
+INSERT INTO `services` (`id`, `name`, `description`, `duration`, `is_active`, `created_at`, `updated_at`, `department_code`) VALUES
+(1, 'General Consultation', 'General check-up with a doctor', 30, 1, '2026-03-28 03:12:34', '2026-03-28 03:12:34', 'G'),
+(2, 'Dental Check-up', 'Oral health examination', 45, 1, '2026-03-28 03:12:34', '2026-03-28 03:12:34', 'D'),
+(3, 'Blood Test', 'Laboratory blood work', 15, 1, '2026-03-28 03:12:34', '2026-03-28 03:12:34', 'B');
 
-CREATE PROCEDURE CompleteAppointment(
-    IN p_appointment_id INT,
-    IN p_acted_by INT
-)
-BEGIN
-    UPDATE appointments 
-    SET status = 'completed', finished_at = NOW() 
-    WHERE id = p_appointment_id;
-    
-    INSERT INTO queue_logs (appointment_id, action, acted_by, created_at) 
-    VALUES (p_appointment_id, 'completed', p_acted_by, NOW());
-END //
+-- --------------------------------------------------------
 
-DELIMITER ;
+--
+-- Table structure for table `users`
+--
 
--- ============================================================================
--- INITIAL DATA (Optional - Uncomment to use)
--- ============================================================================
+CREATE TABLE `users` (
+  `id` int UNSIGNED NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `phone` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `role` enum('patient','admin','doctor') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'patient',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*
--- Admin user (password: admin123)
-INSERT INTO users (name, email, password, phone, role, is_active) 
-VALUES ('Admin User', 'admin@clinic.local', '$2y$10$sFd0f8LL5pGhV3SN8T.Y/OkqJV.PrV0UqJBd5DZf0qlVQZt9KJ2Sm', '555-0001', 'admin', 1);
+--
+-- Dumping data for table `users`
+--
 
--- Doctor user (password: doctor123)
-INSERT INTO users (name, email, password, phone, role, is_active) 
-VALUES ('Dr. Smith', 'doctor@clinic.local', '$2y$10$5.LL/f8LL5pGhV3SN8T.Y/OkqJV.PrV0UqJBd5DZf0qlVQZt9KJ2Sm', '555-0002', 'doctor', 1);
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `role`, `created_at`, `updated_at`) VALUES
+(1, 'Admin', 'admin@clinic.com', '$2y$10$nMo52A81KUB6mnWd/1nSp.u.Erkrbh7RHYfQKdhDlJ/JKb.WN4vN2', NULL, 'admin', '2026-03-28 03:12:34', '2026-03-28 03:12:34'),
+(2, 'Aira Verola', 'airaverola@gmail.com', '$2y$10$rdtWlubmZ0qOpdirXiIAu.h46fd.CL8fKWSuyODj7SFwF8DFKezZ2', '09682834735', 'patient', '2026-03-28 12:39:56', '2026-03-28 12:39:56');
 
--- Sample services
-INSERT INTO services (name, department_code, description, duration, is_active) VALUES
-('General Consultation', 'OPD', 'General medical consultation', 30, 1),
-('Laboratory Tests', 'LAB', 'Blood tests and lab work', 15, 1),
-('Dental Checkup', 'DENT', 'Dental examination and cleaning', 45, 1),
-('Vaccination', 'VACC', 'Vaccinations and immunizations', 20, 1),
-('Eye Examination', 'EYE', 'Optical and eye health checkup', 25, 1),
-('X-Ray & Imaging', 'XRAY', 'Radiographic imaging services', 20, 1);
+--
+-- Indexes for dumped tables
+--
 
--- Clinic schedule (9 AM - 5 PM, closed weekends)
-INSERT INTO schedules (day_of_week, open_time, close_time, is_open) VALUES
-(1, '09:00:00', '17:00:00', 0),  -- Sunday: Closed
-(2, '09:00:00', '17:00:00', 1),  -- Monday: Open
-(3, '09:00:00', '17:00:00', 1),  -- Tuesday: Open
-(4, '09:00:00', '17:00:00', 1),  -- Wednesday: Open
-(5, '09:00:00', '17:00:00', 1),  -- Thursday: Open
-(6, '09:00:00', '17:00:00', 1),  -- Friday: Open
-(7, '09:00:00', '17:00:00', 0);  -- Saturday: Closed
-*/
+--
+-- Indexes for table `appointments`
+--
+ALTER TABLE `appointments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `appointments_user_id_foreign` (`user_id`),
+  ADD KEY `appointments_service_id_foreign` (`service_id`);
 
--- ============================================================================
--- VERIFICATION QUERIES
--- ============================================================================
+--
+-- Indexes for table `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
 
--- Run these queries to verify the schema was created correctly:
+--
+-- Indexes for table `queue_logs`
+--
+ALTER TABLE `queue_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `queue_logs_appointment_id_foreign` (`appointment_id`);
 
-/*
--- Check all tables created
-SELECT 
-    TABLE_NAME, 
-    TABLE_TYPE, 
-    ENGINE, 
-    TABLE_ROWS,
-    DATE_FORMAT(CREATE_TIME, '%Y-%m-%d %H:%i:%s') AS created
-FROM INFORMATION_SCHEMA.TABLES 
-WHERE TABLE_SCHEMA = DATABASE() 
-ORDER BY CREATE_TIME DESC;
+--
+-- Indexes for table `queue_tickets`
+--
+ALTER TABLE `queue_tickets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_date_status` (`date`,`status`);
 
--- Check all views created
-SELECT 
-    TABLE_NAME, 
-    TABLE_TYPE
-FROM INFORMATION_SCHEMA.TABLES 
-WHERE TABLE_SCHEMA = DATABASE() 
-AND TABLE_TYPE = 'VIEW' 
-ORDER BY TABLE_NAME;
+--
+-- Indexes for table `schedules`
+--
+ALTER TABLE `schedules`
+  ADD PRIMARY KEY (`id`);
 
--- Check foreign keys
-SELECT 
-    TABLE_NAME,
-    COLUMN_NAME,
-    REFERENCED_TABLE_NAME,
-    REFERENCED_COLUMN_NAME,
-    UPDATE_RULE,
-    DELETE_RULE
-FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
-WHERE TABLE_SCHEMA = DATABASE() 
-AND REFERENCED_TABLE_NAME IS NOT NULL 
-ORDER BY TABLE_NAME, ORDINAL_POSITION;
+--
+-- Indexes for table `services`
+--
+ALTER TABLE `services`
+  ADD PRIMARY KEY (`id`);
 
--- Check indexes
-SELECT 
-    TABLE_NAME,
-    INDEX_NAME,
-    SEQ_IN_INDEX,
-    COLUMN_NAME,
-    COLLATION,
-    CARDINALITY
-FROM INFORMATION_SCHEMA.STATISTICS 
-WHERE TABLE_SCHEMA = DATABASE() 
-ORDER BY TABLE_NAME, INDEX_NAME, SEQ_IN_INDEX;
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
 
--- Row counts
-SELECT 
-    TABLE_NAME, 
-    TABLE_ROWS
-FROM INFORMATION_SCHEMA.TABLES 
-WHERE TABLE_SCHEMA = DATABASE() 
-ORDER BY TABLE_ROWS DESC;
-*/
+--
+-- AUTO_INCREMENT for dumped tables
+--
 
--- ============================================================================
--- END OF SCHEMA
--- ============================================================================
--- Schema successfully defined for CLINIC-QMS
--- All tables, views, indexes, and procedures are ready
--- Ready for CodeIgniter 4 application integration
--- ============================================================================
+--
+-- AUTO_INCREMENT for table `appointments`
+--
+ALTER TABLE `appointments`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+--
+-- AUTO_INCREMENT for table `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `queue_logs`
+--
+ALTER TABLE `queue_logs`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT for table `queue_tickets`
+--
+ALTER TABLE `queue_tickets`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `schedules`
+--
+ALTER TABLE `schedules`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `services`
+--
+ALTER TABLE `services`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `appointments`
+--
+ALTER TABLE `appointments`
+  ADD CONSTRAINT `appointments_service_id_foreign` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `appointments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `queue_logs`
+--
+ALTER TABLE `queue_logs`
+  ADD CONSTRAINT `queue_logs_appointment_id_foreign` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

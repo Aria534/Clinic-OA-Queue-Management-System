@@ -18,163 +18,286 @@ $nav_items = [
   <title><?= ucfirst($page) ?> | QueueMed Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
     :root {
-      --clinic-blue:   #8a9e7e;
-      --clinic-dark:   #6b7d61;
-      --clinic-light:  #f0f4ee;
-      --clinic-border: #d4dece;
-      --clinic-teal:   #7a9470;
+      --sidebar-bg:    #a98bc8;
+      --accent:        #9b6fc8;
+      --accent-light:  #3a1a5a;
+      --accent-soft:   #2e0f45;
+      --body-bg:       #1a0a2e;
+      --card-bg:       rgba(255,255,255,0.06);
+      --card-border:   rgba(255,255,255,0.1);
+      --text-dark:     #f0e8ff;
+      --text-mid:      #c8a8e8;
+      --text-soft:     #8a6aaa;
     }
 
-    body { background: #fce8ed !important; font-family: 'Segoe UI', sans-serif; }
-    .main-content > div { background: transparent; }
-    .content-card, .stat-card { background: #fff; }
+    *, *::before, *::after { box-sizing: border-box; }
 
-    /* SIDEBAR */
+    body {
+      background: radial-gradient(ellipse at 30% 20%, #5a2070 0%, #2e0f45 50%, #1a0a2e 100%) !important;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
     .sidebar {
       width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; z-index: 200;
-      background: linear-gradient(160deg, #4a5e42 0%, #6b7d61 50%, #8a9e7e 100%);
-      backdrop-filter: blur(10px);
-      box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+      background: linear-gradient(180deg, #3a1255 0%, #2a0d40 50%, #1a0a2e 100%);
+      box-shadow: 6px 0 32px rgba(0,0,0,0.4);
+      display: flex; flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.06);
     }
     .sidebar-brand {
-      padding: 22px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.18);
     }
     .sidebar-brand .brand-icon {
-      width: 44px; height: 44px;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+      width: 46px; height: 46px;
+      background: rgba(255,255,255,0.25);
+      border: 1.5px solid rgba(255,255,255,0.4);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
     }
-    .sidebar-brand .brand-name { font-size: 1.05rem; font-weight: 700; letter-spacing: .3px; }
-    .sidebar-brand .brand-sub  { font-size: .72rem; opacity: .65; }
+    .sidebar-brand .brand-name { font-size: 1.05rem; font-weight: 700; letter-spacing: -.2px; color: #fff; }
+    .sidebar-brand .brand-sub  { font-size: .7rem; color: rgba(255,255,255,0.6); margin-top: 1px; }
 
     .nav-section-label {
-      font-size: .68rem; letter-spacing: 1.4px; opacity: .5;
-      padding: 0 14px; margin: 14px 0 6px; text-transform: uppercase;
+      font-size: .65rem; letter-spacing: 1.6px; color: rgba(255,255,255,0.45);
+      padding: 0 16px; margin: 18px 0 8px; text-transform: uppercase; font-weight: 600;
     }
     .nav-link-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 11px 14px; border-radius: 10px; margin-bottom: 3px;
-      color: rgba(255,255,255,0.8); text-decoration: none; font-size: .95rem;
-      transition: all 0.18s;
+      display: flex; align-items: center; gap: 11px;
+      padding: 10px 14px; border-radius: 12px; margin-bottom: 2px;
+      color: rgba(255,255,255,0.78); text-decoration: none; font-size: .88rem; font-weight: 500;
+      transition: all 0.2s ease;
     }
-    .nav-link-item i { font-size: 1.05rem; }
+    .nav-link-item i { font-size: 1rem; flex-shrink: 0; }
     .nav-link-item:hover {
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(6px);
+      background: rgba(255,255,255,0.18);
       color: #fff;
-      transform: translateX(3px);
+      transform: translateX(4px);
     }
     .nav-link-item.active {
-      background: rgba(255,255,255,0.22);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.28);
+      border: 1px solid rgba(255,255,255,0.3);
       color: #fff; font-weight: 600;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
     }
     .sidebar-footer {
       padding: 16px 20px;
       border-top: 1px solid rgba(255,255,255,0.15);
-      background: rgba(0,0,0,0.08);
+      background: rgba(0,0,0,0.1);
+      margin-top: auto;
     }
     .avatar {
       width: 38px; height: 38px;
-      background: rgba(255,255,255,0.25);
-      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.3);
+      border: 1.5px solid rgba(255,255,255,0.4);
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-size: .88rem; font-weight: 700; color: #fff; flex-shrink: 0;
+      font-size: .85rem; font-weight: 700; color: #fff; flex-shrink: 0;
     }
-    .avatar-name  { font-size: .88rem; font-weight: 600; }
-    .avatar-role  { font-size: .72rem; opacity: .6; }
+    .avatar-name { font-size: .85rem; font-weight: 600; color: #fff; }
+    .avatar-role { font-size: .68rem; color: rgba(255,255,255,0.55); }
 
-    /* TOPBAR */
+    /* ── TOPBAR ── */
     .topbar {
-      left: 260px; right: 0; height: 64px; z-index: 100;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #dde5d8;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      padding-right: 24px !important;
-      overflow: hidden;
+      left: 260px; right: 0; height: 64px; z-index: 100; width: auto;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+      padding: 0 28px !important;
+      overflow: visible;
     }
-    .topbar .breadcrumb-item a, .topbar .breadcrumb-item.active { color: var(--clinic-blue); font-weight: 500; }
+    .topbar .breadcrumb { margin: 0; }
+    .topbar .breadcrumb-item a { color: #c8a0e8; text-decoration: none; }
+    .topbar .breadcrumb-item.active { color: rgba(255,255,255,0.7); font-weight: 600; font-size: .9rem; }
+    .topbar .breadcrumb-item + .breadcrumb-item::before { color: rgba(255,255,255,0.25); }
     .topbar .date-badge {
-      background: var(--clinic-light); color: var(--clinic-blue);
-      border-radius: 8px; padding: 5px 10px; font-size: .82rem; font-weight: 500;
+      background: rgba(200,106,200,0.15);
+      color: #d8a8f0;
+      border-radius: 10px; padding: 6px 14px;
+      font-size: .8rem; font-weight: 600;
       white-space: nowrap; flex-shrink: 0;
+      border: 1px solid rgba(200,106,200,0.25);
     }
+
+    /* ── MAIN ── */
     .main-content { margin-left: 260px; padding-top: 64px; }
 
-    /* STAT CARDS */
+    /* ── STAT CARDS ── */
     .stat-card {
-      border: none; border-radius: 16px;
-      box-shadow: 0 2px 16px rgba(107,125,97,0.10);
-      transition: transform 0.15s, box-shadow 0.15s;
+      border: 1px solid var(--card-border) !important;
+      border-radius: 18px !important;
+      background: var(--card-bg) !important;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 24px rgba(120,80,180,0.08) !important;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(107,125,97,0.18); }
-    .stat-card .card-body { padding: 20px 22px; }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 32px rgba(120,80,180,0.15) !important;
+    }
+    .stat-card .card-body { padding: 22px 24px; }
     .stat-icon {
-      width: 54px; height: 54px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
     }
-    .stat-icon.blue   { background: #e8ede5; color: #6b7d61; }
-    .stat-icon.orange { background: #fef3c7; color: #d97706; }
-    .stat-icon.green  { background: #d1fae5; color: #059669; }
-    .stat-icon.teal   { background: #e2e8df; color: #6b7d61; }
-    .stat-num  { font-size: 2rem; font-weight: 800; line-height: 1; color: #1e2d1a; }
-    .stat-label { font-size: .82rem; color: #7a8c72; margin-top: 4px; font-weight: 500; }
+    .stat-icon.blue   { background: #ede8ff; color: #7c5cbf; }
+    .stat-icon.orange { background: #fff3e0; color: #e07b00; }
+    .stat-icon.green  { background: #e0f7ef; color: #0a9e6a; }
+    .stat-icon.teal   { background: #e8e0ff; color: #7b5ea7; }
+    .stat-num   { font-size: 2rem; font-weight: 800; line-height: 1; color: var(--text-dark); }
+    .stat-label { font-size: .78rem; color: var(--text-soft); margin-top: 5px; font-weight: 500; letter-spacing: .2px; }
 
-    /* PAGE TITLE */
-    .page-title { font-size: 1.25rem; font-weight: 700; color: #2d3d28; margin-bottom: 20px; }
-    .page-title span { font-size: .82rem; font-weight: 400; color: #9aab90; margin-left: 8px; }
+    /* ── PAGE TITLE ── */
+    .page-title {
+      font-size: 1.2rem; font-weight: 700; color: var(--text-dark); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .page-title span { font-size: .78rem; font-weight: 400; color: var(--text-soft); }
 
-    /* CARDS */
-    .content-card { border: none; border-radius: 16px; box-shadow: 0 2px 16px rgba(107,125,97,0.09); overflow: hidden; }
+    /* ── CONTENT CARDS ── */
+    .content-card {
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      border-radius: 18px !important;
+      background: rgba(255,255,255,0.06) !important;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25) !important;
+      overflow: hidden;
+    }
     .content-card .card-header {
-      background: #fff; border-bottom: 1px solid #eaf0e6;
-      padding: 16px 22px; font-weight: 700; color: #2d3d28; font-size: .95rem;
+      background: rgba(255,255,255,0.05) !important;
+      border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+      padding: 16px 22px; font-weight: 700; color: #e8d8ff; font-size: .92rem;
       display: flex; align-items: center; justify-content: space-between;
     }
+    .content-card .card-body { color: #e0d0f8; }
 
-    /* TABLE */
+    /* ── TABLE ── */
     .table thead th {
-      background: #f4f7f2; color: #6b7d61; font-size: .75rem;
-      text-transform: uppercase; letter-spacing: .7px; border: none; padding: 13px 18px; font-weight: 600;
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5);
+      font-size: .72rem; text-transform: uppercase; letter-spacing: .8px;
+      border: none; padding: 13px 18px; font-weight: 600;
     }
-    .table tbody td { padding: 13px 18px; vertical-align: middle; border-color: #f4f7f2; font-size: .9rem; }
-    .table tbody tr:hover { background: #f8faf6; }
-    .queue-num { color: var(--clinic-blue); font-weight: 800; font-family: monospace; font-size: 1rem; }
+    .table tbody td { padding: 13px 18px; vertical-align: middle; border-color: rgba(255,255,255,0.06); font-size: .88rem; color: #e0d0f8; }
+    .table tbody tr { background: transparent !important; }
+    .table tbody tr:hover { background: rgba(255,255,255,0.05) !important; }
+    .table { --bs-table-bg: transparent; --bs-table-striped-bg: transparent; --bs-table-hover-bg: rgba(255,255,255,0.05); color: #e0d0f8; }
+    .queue-num { color: #d8a8f8; font-weight: 800; font-family: 'Inter', monospace; font-size: .95rem; }
+    .fw-semibold, .fw-medium { color: #f0e8ff !important; }
+    .text-muted { color: rgba(255,255,255,0.45) !important; }
 
-    /* BUTTONS */
+    /* ── STAT CARDS ── */
+    .stat-card {
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      border-radius: 18px !important;
+      background: rgba(255,255,255,0.06) !important;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2) !important;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.35) !important;
+    }
+    .stat-card .card-body { padding: 22px 24px; }
+    .stat-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .stat-icon.blue   { background: rgba(180,120,255,0.15); color: #c8a0f8; }
+    .stat-icon.orange { background: rgba(255,180,60,0.15);  color: #ffc060; }
+    .stat-icon.green  { background: rgba(80,220,160,0.15);  color: #60e0b0; }
+    .stat-icon.teal   { background: rgba(160,120,255,0.15); color: #c0a0f8; }
+    .stat-num   { font-size: 2rem; font-weight: 800; line-height: 1; color: #fff; }
+    .stat-label { font-size: .78rem; color: rgba(255,255,255,0.4); margin-top: 5px; font-weight: 500; }
+
+    /* ── PAGE TITLE ── */
+    .page-title {
+      font-size: 1.2rem; font-weight: 700; color: #f0e8ff; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .page-title span { font-size: .78rem; font-weight: 400; color: rgba(255,255,255,0.3); }
+
+    /* ── BUTTONS ── */
     .btn-clinic {
-      background: linear-gradient(135deg, #6b7d61 0%, #8a9e7e 100%);
-      border: none; color: #fff; font-weight: 600; border-radius: 8px;
+      background: linear-gradient(135deg, #9b5ec8 0%, #c86aaa 100%);
+      border: none; color: #fff; font-weight: 600; border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(155,94,200,0.35);
+      transition: all 0.2s;
     }
     .btn-clinic:hover {
-      background: linear-gradient(135deg, #4a5e42 0%, #6b7d61 100%);
-      color: #fff; box-shadow: 0 4px 12px rgba(107,125,97,0.35);
+      background: linear-gradient(135deg, #8a4eb8 0%, #b85a9a 100%);
+      color: #fff; box-shadow: 0 6px 20px rgba(155,94,200,0.5);
+      transform: translateY(-1px);
+    }
+    .btn-success {
+      background: linear-gradient(135deg, #9b5ec8 0%, #c86aaa 100%) !important;
+      border: none !important;
+      box-shadow: 0 4px 14px rgba(155,94,200,0.3) !important;
+    }
+    .btn-outline-secondary {
+      border-color: rgba(255,255,255,0.2) !important;
+      color: rgba(255,255,255,0.5) !important;
+    }
+    .btn-outline-secondary:hover {
+      background: rgba(255,255,255,0.1) !important;
+      color: #fff !important;
     }
 
-    /* FORM CONTROLS */
+    /* ── FORM ── */
+    .form-control, .form-select {
+      background: rgba(255,255,255,0.08) !important;
+      border-color: rgba(255,255,255,0.12) !important;
+      border-radius: 10px;
+      font-size: .88rem;
+      color: #fff !important;
+    }
+    .form-control::placeholder { color: rgba(255,255,255,0.2) !important; }
     .form-control:focus, .form-select:focus {
-      border-color: var(--clinic-blue); box-shadow: 0 0 0 3px rgba(138,158,126,0.18);
+      border-color: rgba(200,106,200,0.7) !important;
+      box-shadow: 0 0 0 3px rgba(200,106,200,0.15) !important;
+      background: rgba(255,255,255,0.11) !important;
     }
-    .form-select-sm { border-radius: 6px; font-size: .82rem; }
+    .form-select option { background: #2e0f45; color: #fff; }
+    .form-select-sm { border-radius: 8px; font-size: .8rem; color: #fff !important; }
+    .form-label { color: rgba(255,255,255,0.7); font-weight: 600; font-size: .82rem; }
 
-    /* BREADCRUMB */
-    .breadcrumb-item.active { color: var(--clinic-blue); font-weight: 500; }
+    /* ── LIST GROUP ── */
+    .list-group-item {
+      border-color: rgba(255,255,255,0.07) !important;
+      background: transparent !important;
+      color: #e0d0f8;
+    }
+    .list-group-item:hover { background: rgba(255,255,255,0.04) !important; }
+    .list-group-item .fw-semibold, .list-group-item .fw-medium { color: #f0e8ff; }
+    .list-group-item .text-muted { color: rgba(255,255,255,0.4) !important; }
+
+    /* ── ALERTS ── */
+    .alert-success { background: rgba(100,220,160,0.1); border-color: rgba(100,220,160,0.2); color: #7de8b8; border-radius: 12px; }
+    .alert-danger  { background: rgba(220,80,80,0.1);  border-color: rgba(220,80,80,0.2);  color: #f09090; border-radius: 12px; }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb-item.active { color: rgba(255,255,255,0.7); font-weight: 600; }
 
     @media(max-width:991px){
       .sidebar { transform: translateX(-100%); transition: transform .3s; }
       .sidebar.show { transform: translateX(0); }
       .main-content { margin-left: 0; }
       .topbar { left: 0; }
-    }  </style>
+    }
+  </style>
 </head>
 <body>
 
@@ -208,19 +331,15 @@ $nav_items = [
 </div>
 
 <!-- TOPBAR -->
-<nav class="navbar topbar px-4 position-fixed d-flex align-items-center justify-content-between w-100">
+<nav class="navbar topbar px-4 position-fixed d-flex align-items-center justify-content-between">
   <div class="d-flex align-items-center gap-2">
     <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle"><i class="bi bi-list"></i></button>
     <ol class="breadcrumb mb-0">
-      <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard') ?>" class="text-decoration-none"><i class="bi bi-house-fill"></i></a></li>
       <li class="breadcrumb-item active fw-semibold"><?= ucfirst($page) ?></li>
     </ol>
   </div>
   <div class="d-flex align-items-center gap-2">
     <span class="date-badge"><i class="bi bi-calendar3 me-1"></i><?= date('M d, Y') ?></span>
-    <a href="<?= base_url('admin/appointments') ?>" class="btn btn-sm btn-clinic px-3">
-      <i class="bi bi-plus-lg me-1"></i> New Appointment
-    </a>
   </div>
 </nav>
 
@@ -242,7 +361,7 @@ $nav_items = [
     <!-- ==================== DASHBOARD ==================== -->
     <?php if ($page === 'dashboard'): ?>
 
-    <div class="page-title"><i class="bi bi-grid-1x2-fill me-2"></i>Dashboard <span>Overview for today</span></div>
+    <div class="page-title"><i class="bi bi-grid-1x2-fill me-2"></i>Dashboard</div>
 
     <div class="row g-3 mb-4">
       <div class="col-6 col-xl-3">
@@ -302,18 +421,19 @@ $nav_items = [
             <thead><tr><th>Queue #</th><th>Patient</th><th>Service</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
             <tbody>
             <?php foreach ($recent_appts ?? [] as $a): ?>
-            <?php $s = $a['status'] ?? 'pending'; $b = match($s) { 'confirmed'=>'primary','completed'=>'success','cancelled'=>'danger','serving'=>'info', default=>'warning' }; ?>
+            <?php $s = $a['status'] ?? 'waiting'; $b = match($s) { 'serving'=>'info','completed'=>'success','skipped'=>'danger', default=>'warning' }; ?>
             <tr>
-              <td><span class="queue-num">#<?= esc($a['queue_number'] ?? '-') ?></span></td>
-              <td class="fw-semibold"><?= esc($a['patient_name'] ?? $a['name'] ?? '-') ?></td>
-              <td class="text-muted"><?= esc($a['service_name'] ?? '-') ?></td>              <td class="text-muted"><?= esc($a['appointment_date'] ?? '-') ?></td>
+              <td><span class="queue-num">#<?= str_pad(esc($a['queue_number']), 3, '0', STR_PAD_LEFT) ?></span></td>
+              <td class="fw-semibold"><?= esc($a['patient_name'] ?? '-') ?></td>
+              <td class="text-muted"><?= esc($a['service_name'] ?? '-') ?></td>
+              <td class="text-muted"><?= esc($a['date'] ?? '-') ?></td>
               <td><span class="badge bg-<?= $b ?> rounded-pill px-3"><?= ucfirst($s) ?></span></td>
               <td>
                 <form method="POST" action="<?= base_url('admin/appointments/update') ?>" class="d-inline">
                   <?= csrf_field() ?>
                   <input type="hidden" name="id" value="<?= $a['id'] ?>">
                   <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
-                    <?php foreach (['pending','confirmed','serving','completed','cancelled'] as $opt): ?>
+                    <?php foreach (['waiting','serving','completed','skipped'] as $opt): ?>
                     <option value="<?= $opt ?>" <?= $s===$opt?'selected':'' ?>><?= ucfirst($opt) ?></option>
                     <?php endforeach; ?>
                   </select>
@@ -335,7 +455,7 @@ $nav_items = [
     <!-- ==================== APPOINTMENTS ==================== -->
     <?php elseif ($page === 'appointments'): ?>
 
-    <div class="page-title"><i class="bi bi-calendar-check me-2"></i>Appointments <span>All records</span></div>
+    <div class="page-title"><i class="bi bi-calendar-check me-2"></i>Appointments</div>
     <div class="card content-card">
       <div class="card-header"><i class="bi bi-calendar-check me-2 text-muted"></i>All Appointments</div>
       <div class="card-body p-0">
@@ -344,19 +464,19 @@ $nav_items = [
             <thead><tr><th>Queue #</th><th>Patient</th><th>Service</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
             <tbody>
             <?php foreach ($appointments ?? [] as $a): ?>
-            <?php $s = $a['status'] ?? 'pending'; $b = match($s) { 'confirmed'=>'primary','completed'=>'success','cancelled'=>'danger','serving'=>'info', default=>'warning' }; ?>
+            <?php $s = $a['status'] ?? 'waiting'; $b = match($s) { 'serving'=>'info','completed'=>'success','skipped'=>'danger', default=>'warning' }; ?>
             <tr>
-              <td><span class="queue-num">#<?= esc($a['queue_number'] ?? '-') ?></span></td>
-              <td class="fw-medium"><?= esc($a['patient_name'] ?? $a['name'] ?? '-') ?></td>
+              <td><span class="queue-num">#<?= str_pad(esc($a['queue_number']), 3, '0', STR_PAD_LEFT) ?></span></td>
+              <td class="fw-medium"><?= esc($a['patient_name'] ?? '-') ?></td>
               <td class="text-muted"><?= esc($a['service_name'] ?? '-') ?></td>
-              <td class="text-muted"><?= esc($a['appointment_date'] ?? '-') ?></td>
+              <td class="text-muted"><?= esc($a['date'] ?? '-') ?></td>
               <td><span class="badge bg-<?= $b ?> rounded-pill"><?= ucfirst($s) ?></span></td>
               <td>
                 <form method="POST" action="<?= base_url('admin/appointments/update') ?>" class="d-inline">
                   <?= csrf_field() ?>
                   <input type="hidden" name="id" value="<?= $a['id'] ?>">
                   <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
-                    <?php foreach (['pending','confirmed','serving','completed','cancelled'] as $opt): ?>
+                    <?php foreach (['waiting','serving','completed','skipped'] as $opt): ?>
                     <option value="<?= $opt ?>" <?= $s===$opt?'selected':'' ?>><?= ucfirst($opt) ?></option>
                     <?php endforeach; ?>
                   </select>
@@ -376,7 +496,7 @@ $nav_items = [
     <!-- ==================== QUEUE ==================== -->
     <?php elseif ($page === 'queue'): ?>
 
-    <div class="page-title"><i class="bi bi-ticket-perforated me-2"></i>Queue Monitor <span>Live queue status</span></div>
+    <div class="page-title"><i class="bi bi-ticket-perforated me-2"></i>Queue Monitor</div>
     <div class="d-flex justify-content-end mb-3">
       <form method="POST" action="<?= base_url('admin/queue/next') ?>">
         <?= csrf_field() ?>
@@ -417,7 +537,7 @@ $nav_items = [
     <!-- ==================== SERVICES ==================== -->
     <?php elseif ($page === 'services'): ?>
 
-    <div class="page-title"><i class="bi bi-clipboard2-pulse me-2"></i>Services <span>Manage clinic services</span></div>
+    <div class="page-title"><i class="bi bi-clipboard2-pulse me-2"></i>Services</div>
 
     <div class="row g-3">
       <div class="col-12 col-md-5">

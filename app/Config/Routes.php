@@ -21,6 +21,9 @@ $routes->get('logout', 'Auth::logout');
 // ── ADMIN (login required) ────────────────────────────────
 $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
     $routes->get('/',                           'Admin::index');
+    $routes->get('dashboard',                   'Admin::index');
+    $routes->get('appointments',                'Admin::appointments');
+    $routes->post('appointments/update',        'Admin::updateAppointment');
     $routes->get('queue',                       'Admin::queue');
     $routes->post('queue/next',                 'Admin::callNext');
     $routes->post('queue/skip',                 'Admin::skipCurrent');

@@ -4,210 +4,197 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Get Queue Number | QueueMed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body { height: 100%; }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #0b0f1a;
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
+      background: radial-gradient(ellipse at 30% 20%, #5a2070 0%, #2e0f45 50%, #1a0a2e 100%);
       display: flex;
       flex-direction: column;
-      color: #d4d8e8;
+      color: #e8e0f5;
     }
+
+    /* orbs */
+    .orb {
+      position: fixed; border-radius: 50%;
+      pointer-events: none; filter: blur(80px); z-index: 0;
+    }
+    .orb-1 { width: 350px; height: 350px; background: rgba(180,80,200,0.2);  top: -80px;  left: -80px; }
+    .orb-2 { width: 250px; height: 250px; background: rgba(120,60,200,0.18); bottom: 60px; right: -60px; }
 
     /* ── NAV ── */
     nav {
-      background: #060910;
-      border-bottom: 1px solid #1e2538;
+      position: relative; z-index: 10;
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
       padding: 0 2.5rem;
-      height: 54px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
       flex-shrink: 0;
     }
-
     .nav-brand {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #e8eaf0;
-      letter-spacing: -0.2px;
+      display: flex; align-items: center; gap: 10px;
       text-decoration: none;
     }
-
-    .nav-back {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
-      color: #8b92a8;
-      text-decoration: none;
-      background: #131929;
-      border: 1px solid #252d42;
-      border-radius: 8px;
-      padding: 7px 14px;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    .nav-brand .brand-mark {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #c86aaa, #9b5ec8);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 14px rgba(180,80,200,0.35);
     }
-    .nav-back:hover {
-      color: #c8cdd9;
-      border-color: #3a4460;
-      background: #1a2238;
+    .nav-brand .brand-name {
+      font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: -.2px;
+    }
+    .nav-login {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 9px; padding: 7px 14px;
+      transition: all 0.2s;
+    }
+    .nav-login:hover {
+      color: #fff;
+      background: rgba(200,106,200,0.15);
+      border-color: rgba(200,106,200,0.35);
     }
 
     /* ── MAIN ── */
     main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      flex: 1; position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
       padding: 3rem 1.5rem;
     }
 
     .page-wrap {
-      width: 100%;
-      max-width: 440px;
+      width: 100%; max-width: 560px;
       animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
-
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     .page-title {
-      font-size: 1.7rem;
-      font-weight: 800;
-      color: #e8eaf0;
-      text-align: center;
-      letter-spacing: -0.5px;
-      margin-bottom: 0.35rem;
+      font-size: 2.4rem; font-weight: 800;
+      color: #fff; text-align: center; letter-spacing: -.5px;
+      margin-bottom: 0.4rem;
     }
-
     .page-sub {
-      font-size: 0.84rem;
-      color: #5c6480;
-      text-align: center;
-      margin-bottom: 1.75rem;
+      font-size: 1rem; color: rgba(255,255,255,0.45);
+      text-align: center; margin-bottom: 2rem;
     }
 
     /* alerts */
     .alert {
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      font-size: 0.83rem;
-      margin-bottom: 1.25rem;
-      border: 1px solid #4a1f1f;
-      background: #1e1010;
-      color: #f09595;
-      line-height: 1.5;
+      border-radius: 12px; padding: 0.75rem 1rem;
+      font-size: 0.82rem; margin-bottom: 1.25rem;
+      background: rgba(220,80,80,0.12);
+      border: 1px solid rgba(220,80,80,0.25);
+      color: #f09090; line-height: 1.5;
     }
 
     /* card */
     .card {
-      background: #111827;
-      border: 1px solid #1e2a3d;
-      border-radius: 14px;
-      padding: 1.75rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px; padding: 2.5rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
     }
 
     /* fields */
-    .field { margin-bottom: 1.25rem; }
-
+    .field { margin-bottom: 1.5rem; }
     .field label {
-      display: block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: #6b7494;
-      margin-bottom: 7px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+      display: block; font-size: 0.82rem; font-weight: 600;
+      color: rgba(255,255,255,0.7); margin-bottom: 8px;
+      letter-spacing: 0.06em; text-transform: uppercase;
     }
-
     .field input,
     .field select {
-      width: 100%;
-      padding: 11px 14px;
-      font-family: Arial, sans-serif;
-      font-size: 0.9rem;
-      color: #d4d8e8;
-      background: #0d1320;
-      border: 1px solid #1e2a3d;
-      border-radius: 9px;
-      outline: none;
-      appearance: none;
-      -webkit-appearance: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%; padding: 14px 16px;
+      font-family: 'Inter', sans-serif; font-size: 1rem;
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 12px; outline: none;
+      appearance: none; -webkit-appearance: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
     }
-
-    .field input::placeholder { color: #303752; }
-
+    .field input::placeholder { color: rgba(255,255,255,0.2); }
     .field input:focus,
     .field select:focus {
-      border-color: #3b6fd4;
-      box-shadow: 0 0 0 3px rgba(59,111,212,0.15);
+      border-color: rgba(200,106,200,0.7);
+      background: rgba(255,255,255,0.11);
+      box-shadow: 0 0 0 3px rgba(200,106,200,0.15);
     }
+    /* style select options (limited browser support) */
+    .field select option { background: #2e0f45; color: #fff; }
 
     .select-wrap { position: relative; }
     .select-wrap::after {
-      content: '▾';
-      position: absolute;
-      right: 13px;
-      top: 50%;
+      content: '\F282';
+      font-family: 'bootstrap-icons';
+      position: absolute; right: 13px; top: 50%;
       transform: translateY(-50%);
-      color: #4a5270;
-      pointer-events: none;
-      font-size: 0.82rem;
+      color: rgba(255,255,255,0.3); pointer-events: none; font-size: 0.85rem;
     }
 
     .card-divider {
-      height: 1px;
-      background: #1a2235;
-      margin: 1.25rem 0;
+      height: 1px; background: rgba(255,255,255,0.08); margin: 1.25rem 0;
     }
 
     /* submit */
     .btn-submit {
-      width: 100%;
-      padding: 13px;
-      background: #1a4dd6;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      font-weight: 700;
-      font-size: 0.92rem;
-      letter-spacing: 0.02em;
-      border: none;
-      border-radius: 9px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background 0.2s, transform 0.15s;
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, #9b5ec8 0%, #c86aaa 100%);
+      color: #fff; font-family: 'Inter', sans-serif;
+      font-weight: 700; font-size: 1rem; letter-spacing: 0.02em;
+      border: none; border-radius: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 8px 24px rgba(155,94,200,0.4);
+      transition: all 0.2s;
     }
     .btn-submit:hover {
-      background: #1642bb;
-      transform: translateY(-1px);
+      background: linear-gradient(135deg, #8a4eb8 0%, #b85a9a 100%);
+      box-shadow: 0 12px 32px rgba(155,94,200,0.55);
+      transform: translateY(-2px);
     }
     .btn-submit:active { transform: translateY(0); }
 
     /* footer */
     footer {
-      text-align: center;
-      font-size: 0.72rem;
-      color: #2e3450;
-      padding: 1.25rem;
-      flex-shrink: 0;
+      position: relative; z-index: 1;
+      text-align: center; font-size: 0.7rem;
+      color: rgba(255,255,255,0.18); padding: 1.25rem; flex-shrink: 0;
     }
   </style>
 </head>
 <body>
 
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
 <!-- NAV -->
 <nav>
-  <a href="<?= base_url('/') ?>" class="nav-brand">QueueMed</a>
-  <a href="<?= base_url('login') ?>" class="nav-back">
-     Admin Login
+  <a href="<?= base_url('/') ?>" class="nav-brand">
+    <div class="brand-mark"><i class="bi bi-clipboard2-pulse text-white"></i></div>
+    <span class="brand-name">QueueMed</span>
+  </a>
+  <a href="<?= base_url('login') ?>" class="nav-login">
+    <i class="bi bi-box-arrow-in-right"></i> Admin Login
   </a>
 </nav>
 
@@ -218,15 +205,14 @@
     <h1 class="page-title">Get Your Queue Number</h1>
     <p class="page-sub">Walk-in only &nbsp;·&nbsp; No login required</p>
 
-    <!-- ALERTS -->
     <?php if (session()->getFlashdata('error')): ?>
-    <div class="alert">✕ <?= session()->getFlashdata('error') ?></div>
+    <div class="alert"><i class="bi bi-exclamation-circle me-1"></i><?= session()->getFlashdata('error') ?></div>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('errors')): ?>
     <div class="alert">
       <?php foreach (session()->getFlashdata('errors') as $e): ?>
-        <div>✕ <?= esc($e) ?></div>
+        <div><i class="bi bi-exclamation-circle me-1"></i><?= esc($e) ?></div>
       <?php endforeach; ?>
     </div>
     <?php endif; ?>
@@ -259,7 +245,7 @@
         <div class="card-divider"></div>
 
         <button type="submit" class="btn-submit">
-          🎫 &nbsp;Get Queue Number
+          <i class="bi bi-ticket-perforated"></i> Get Queue Number
         </button>
 
       </form>
@@ -268,9 +254,7 @@
   </div>
 </main>
 
-<footer>
-  &copy; <?= date('Y') ?> QueueMed. All rights reserved.
-</footer>
+<footer>&copy; <?= date('Y') ?> QueueMed. All rights reserved.</footer>
 
 </body>
 </html>

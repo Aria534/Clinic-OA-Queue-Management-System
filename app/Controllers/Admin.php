@@ -8,18 +8,60 @@ use App\Models\ServiceModel;
 class Admin extends BaseController
 {
     // ----------------------------------------------------------------
+    // Appointments
+    // ----------------------------------------------------------------
+    public function appointments()
+    {
+        $model = new QueueTicketModel();
+        $appointments = $model
+            ->select('queue_tickets.*, services.name as service_name')
+            ->join('services', 'services.id = queue_tickets.service_id', 'left')
+            ->orderBy('queue_tickets.date', 'DESC')
+            ->orderBy('queue_tickets.queue_number', 'ASC')
+            ->findAll();
+
+        return view('admin/dashboard', [
+            'page'         => 'appointments',
+            'appointments' => $appointments,
+        ]);
+    }
+
+    public function updateAppointment()
+    {
+        $model  = new QueueTicketModel();
+        $id     = (int) $this->request->getPost('id');
+        $status = $this->request->getPost('status');
+
+        $allowed = ['waiting', 'serving', 'completed', 'skipped'];
+        if ($id && in_array($status, $allowed)) {
+            $model->update($id, ['status' => $status]);
+        }
+
+        return redirect()->back()->with('success', 'Status updated.');
+    }
+
+    // ----------------------------------------------------------------
     // Dashboard
     // ----------------------------------------------------------------
     public function index()
     {
-        $model = new QueueTicketModel();
-        $stats = $model->getTodayStats();
+        $queueModel = new QueueTicketModel();
+        $stats      = $queueModel->getTodayStats();
 
         return view('admin/dashboard', [
-            'page'    => 'dashboard',
-            'stats'   => $stats,
-            'queue'   => $model->getTodayQueue(),
-            'serving' => $model->getCurrentlyServing(),
+            'page'         => 'dashboard',
+            'stats'        => $stats,
+            'queue'        => $queueModel->getTodayQueue(),
+            'serving'      => $queueModel->getCurrentlyServing(),
+            'recent_appts' => $queueModel->select('queue_tickets.*, services.name as service_name')
+                                ->join('services', 'services.id = queue_tickets.service_id', 'left')
+                                ->orderBy('queue_tickets.id', 'DESC')
+                                ->limit(10)
+                                ->findAll(),
+            'total_today'     => $stats['total']     ?? 0,
+            'pending_count'   => $stats['waiting']   ?? 0,
+            'completed_today' => $stats['completed'] ?? 0,
+            'total_patients'  => $stats['total']     ?? 0,
         ]);
     }
 

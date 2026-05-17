@@ -4,421 +4,296 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login | QueueMed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
   <style>
-    :root {
-      --bg:        #f7f4ef;
-      --ink:       #111010;
-      --muted:     #8a8680;
-      --accent:    #c84b2f;
-      --accent2:   #e8a87c;
-      --panel:     #ffffff;
-      --border:    #e2ddd6;
-      --success:   #2d6a4f;
-      --error:     #c84b2f;
-    }
-
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body { height: 100%; overflow: hidden; }
+
     body {
-      background: var(--bg);
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      height: 100vh;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      overflow: hidden;
     }
 
     /* ── LEFT PANEL ── */
     .left {
+      position: relative;
+      overflow: hidden;
+      background: #1a0a2e;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 3rem;
-      position: relative;
-      overflow: hidden;
-      background: #1a0a1e;
+      padding: 2.5rem;
+      height: 100vh;
     }
 
-    /* Girly gradient background: deep plum + lilac + dusty rose */
-    .left-bg {
-      position: absolute;
-      inset: 0;
+    /* layered purple gradient */
+    .left::before {
+      content: '';
+      position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 90% 70% at 10% 100%, rgba(186, 85, 140, 0.45) 0%, transparent 60%),
-        radial-gradient(ellipse 70% 50% at 90% 10%, rgba(147, 99, 186, 0.35) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(218, 143, 175, 0.18) 0%, transparent 60%);
+        radial-gradient(ellipse 80% 60% at 20% 110%, rgba(180,80,200,0.5) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 85% 5%,  rgba(120,60,180,0.4) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(200,120,220,0.15) 0%, transparent 60%);
       pointer-events: none;
     }
 
-    /* Soft shimmer grid */
-    .left-grid {
-      position: absolute;
-      inset: 0;
+    /* subtle grid */
+    .left::after {
+      content: '';
+      position: absolute; inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 48px 48px;
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 52px 52px;
       pointer-events: none;
     }
 
-    /* Floating orbs */
+    /* floating orbs */
     .orb {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-      filter: blur(60px);
+      position: absolute; border-radius: 50%;
+      pointer-events: none; filter: blur(70px);
     }
-    .orb-1 {
-      width: 260px; height: 260px;
-      background: rgba(200, 100, 160, 0.22);
-      bottom: 80px; left: -60px;
-    }
-    .orb-2 {
-      width: 180px; height: 180px;
-      background: rgba(140, 80, 200, 0.2);
-      top: 60px; right: -40px;
-    }
-    .orb-3 {
-      width: 120px; height: 120px;
-      background: rgba(240, 180, 210, 0.15);
-      top: 42%; left: 55%;
-    }
+    .orb-1 { width: 300px; height: 300px; background: rgba(180,80,200,0.25); bottom: 60px; left: -80px; }
+    .orb-2 { width: 200px; height: 200px; background: rgba(120,60,200,0.22); top: 40px; right: -50px; }
+    .orb-3 { width: 140px; height: 140px; background: rgba(230,160,240,0.12); top: 45%; left: 50%; }
 
     .left-brand {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      position: relative; z-index: 2;
+      display: flex; align-items: center; gap: 12px;
     }
-
     .brand-mark {
-      width: 42px; height: 42px;
+      width: 44px; height: 44px;
       background: linear-gradient(135deg, #c86aaa, #9b5ec8);
-      border-radius: 10px;
+      border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 20px rgba(180,80,200,0.4);
     }
+    .brand-name { font-size: 1.1rem; font-weight: 800; color: #fff; letter-spacing: -.3px; }
+    .brand-sub  { font-size: .65rem; color: rgba(255,255,255,0.35); letter-spacing: .15em; text-transform: uppercase; }
 
-    .brand-text {
-      font-family: Arial, sans-serif;
-      font-weight: 800;
-      font-size: 1.4rem;
-      color: #fff;
-      letter-spacing: -0.5px;
-    }
-
-    .brand-sub {
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.35);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-top: 1px;
-    }
-
-    .left-hero {
-      position: relative;
-      z-index: 1;
-    }
+    .left-hero { position: relative; z-index: 2; }
 
     .left-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(200, 100, 160, 0.18);
-      border: 1px solid rgba(200, 100, 160, 0.35);
-      color: #f0b8d8;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 0.35rem 0.85rem;
-      border-radius: 50px;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(200,100,220,0.15);
+      border: 1px solid rgba(200,100,220,0.3);
+      color: #e8b0f0;
+      font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      padding: .35rem .9rem; border-radius: 50px;
       margin-bottom: 1.5rem;
     }
-
     .left-tag .dot {
       width: 6px; height: 6px;
-      background: #e87fbd;
-      border-radius: 50%;
+      background: #e87fbd; border-radius: 50%;
       animation: pulse 2s infinite;
     }
-
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.4; transform: scale(0.8); }
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.4; transform:scale(.8); }
     }
 
     .left-headline {
-      font-family: Arial, sans-serif;
-      font-weight: 900;
-      font-size: clamp(2.8rem, 4.5vw, 4rem);
-      line-height: 1.05;
-      color: #fff;
-      letter-spacing: -2px;
-      margin-bottom: 1.25rem;
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 900; line-height: 1.02;
+      color: #fff; letter-spacing: -2.5px;
+      margin-bottom: 1.2rem;
     }
-
     .left-headline em {
       font-style: normal;
-      background: linear-gradient(120deg, #f0b8d8, #c89ce8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      background: linear-gradient(120deg, #f0b8e8, #c89ce8, #a87de0);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-
     .left-desc {
-      font-size: 0.92rem;
-      color: rgba(255,255,255,0.45);
-      line-height: 1.7;
-      max-width: 340px;
+      font-size: .9rem; color: rgba(255,255,255,0.4);
+      line-height: 1.75; max-width: 320px;
     }
+
+    /* stats pills */
+    .left-stats {
+      position: relative; z-index: 2;
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+    .stat-pill {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 10px 16px;
+      backdrop-filter: blur(8px);
+    }
+    .stat-pill .num  { font-size: 1.2rem; font-weight: 800; color: #fff; line-height: 1; }
+    .stat-pill .lbl  { font-size: .65rem; color: rgba(255,255,255,0.4); margin-top: 2px; letter-spacing: .05em; }
 
     /* ── RIGHT PANEL ── */
     .right {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem 4rem;
       position: relative;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 3rem 4rem;
+      background: radial-gradient(ellipse at 55% 35%, #5a2070 0%, #2e0f45 55%, #1a0a2e 100%);
+      overflow: hidden;
+      height: 100vh;
     }
-
     .right::before {
       content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23111010' fill-opacity='0.04'/%3E%3C/svg%3E");
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 100px 100px;
       pointer-events: none;
     }
 
-    .form-wrap {
-      width: 100%;
-      max-width: 400px;
-      position: relative;
-      z-index: 1;
-      animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    /* glass card */
+    .form-card {
+      width: 100%; max-width: 400px;
+      position: relative; z-index: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 2.5rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+      animation: slideUp .55s cubic-bezier(.22,1,.36,1) both;
     }
-
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from { opacity:0; transform:translateY(28px); }
+      to   { opacity:1; transform:translateY(0); }
     }
 
     .form-heading {
-      font-family: Arial, sans-serif;
-      font-weight: 700;
-      font-size: 1.9rem;
-      color: var(--ink);
-      letter-spacing: -0.5px;
-      margin-bottom: 0.4rem;
+      font-size: 2rem; font-weight: 800;
+      color: #fff; letter-spacing: -.5px;
+      margin-bottom: .35rem;
     }
-
     .form-sub {
-      font-size: 0.88rem;
-      color: var(--muted);
-      margin-bottom: 2.25rem;
+      font-size: .88rem; color: rgba(255,255,255,0.45);
+      margin-bottom: 2rem;
     }
 
     /* alerts */
     .alert {
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      font-size: 0.83rem;
-      margin-bottom: 1.25rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      line-height: 1.5;
+      border-radius: 12px; padding: .75rem 1rem;
+      font-size: .82rem; margin-bottom: 1.25rem;
+      display: flex; align-items: flex-start; gap: 8px; line-height: 1.5;
     }
-    .alert-success { background: #edf7f1; color: var(--success); border: 1px solid #b7dfc9; }
-    .alert-danger  { background: #fdf2f0; color: var(--error);   border: 1px solid #f3c4bb; }
+    .alert-success { background: rgba(100,220,160,0.12); color: #7de8b8; border: 1px solid rgba(100,220,160,0.25); }
+    .alert-danger  { background: rgba(220,80,80,0.12);  color: #f09090; border: 1px solid rgba(220,80,80,0.25); }
     .alert ul { padding-left: 1rem; margin: 0; }
 
-    /* form fields */
-    .field { margin-bottom: 1.25rem; }
-
+    /* fields */
+    .field { margin-bottom: 1.1rem; }
     .field label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--ink);
-      margin-bottom: 0.45rem;
-      letter-spacing: 0.02em;
-      font-family: Arial, sans-serif;
+      display: block; font-size: .75rem; font-weight: 600;
+      color: rgba(255,255,255,0.7); margin-bottom: .4rem; letter-spacing: .03em;
     }
-
-    .input-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
+    .input-wrap { position: relative; display: flex; align-items: center; }
     .input-icon {
-      position: absolute;
-      left: 14px;
-      color: var(--muted);
-      font-size: 0.95rem;
-      pointer-events: none;
-      line-height: 1;
+      position: absolute; left: 13px;
+      color: rgba(255,255,255,0.3); font-size: .95rem; pointer-events: none;
     }
-
-    /* email field has icon, password field does NOT */
-    .input-wrap input.with-icon {
-      padding: 0.8rem 1rem 0.8rem 2.65rem;
-    }
-
-    .input-wrap input.no-icon {
-      padding: 0.8rem 2.65rem 0.8rem 1rem;
-    }
-
     .input-wrap input {
       width: 100%;
-      font-family: Arial, sans-serif;
-      font-size: 0.92rem;
-      color: var(--ink);
-      background: var(--panel);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: 'Inter', sans-serif; font-size: .9rem;
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 12px; outline: none;
+      padding: .8rem 1rem .8rem 2.6rem;
+      transition: border-color .2s, box-shadow .2s, background .2s;
     }
-
+    .input-wrap input.no-icon { padding-left: 1rem; padding-right: 2.8rem; }
+    .input-wrap input::placeholder { color: rgba(255,255,255,0.2); }
     .input-wrap input:focus {
-      border-color: #c86aaa;
-      box-shadow: 0 0 0 3px rgba(200, 106, 170, 0.12);
+      border-color: rgba(200,106,200,0.7);
+      background: rgba(255,255,255,0.11);
+      box-shadow: 0 0 0 3px rgba(200,106,200,0.15);
     }
-
-    .input-wrap input::placeholder { color: #c4bfb9; }
 
     .pw-toggle {
-      position: absolute;
-      right: 12px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--muted);
-      padding: 4px;
-      line-height: 1;
-      font-size: 1rem;
-      transition: color 0.2s;
+      position: absolute; right: 12px;
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,0.3); font-size: 1rem;
+      transition: color .2s; padding: 4px;
     }
-    .pw-toggle:hover { color: var(--ink); }
+    .pw-toggle:hover { color: rgba(255,255,255,0.7); }
 
-    /* row */
     .field-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.75rem;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.6rem;
     }
-
     .check-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      font-size: 0.83rem;
-      color: var(--muted);
-      user-select: none;
-      font-family: Arial, sans-serif;
+      display: flex; align-items: center; gap: 8px;
+      cursor: pointer; font-size: .8rem;
+      color: rgba(255,255,255,0.45); user-select: none;
     }
-
     .check-label input[type="checkbox"] {
-      width: 15px; height: 15px;
-      accent-color: #c86aaa;
-      cursor: pointer;
+      width: 15px; height: 15px; accent-color: #c86aaa; cursor: pointer;
     }
-
     .forgot {
-      font-size: 0.83rem;
-      color: #c84b2f;
-      text-decoration: none;
-      font-weight: 700;
-      font-family: Arial, sans-serif;
+      font-size: .8rem; color: #d090e8;
+      text-decoration: none; font-weight: 600;
     }
-    .forgot:hover { text-decoration: underline; }
+    .forgot:hover { color: #e8b0f8; text-decoration: underline; }
 
-    /* submit */
+    /* login button */
     .btn-login {
-      width: 100%;
-      padding: 0.9rem;
-      background: var(--ink);
-      color: #fff;
-      font-family: Arial, sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-      letter-spacing: 0.05em;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      width: 100%; padding: .9rem;
+      background: linear-gradient(135deg, #9b5ec8 0%, #c86aaa 100%);
+      color: #fff; font-family: 'Inter', sans-serif;
+      font-weight: 700; font-size: .92rem; letter-spacing: .03em;
+      border: none; border-radius: 12px; cursor: pointer;
+      box-shadow: 0 8px 24px rgba(155,94,200,0.4);
+      transition: all .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
       margin-bottom: 1rem;
     }
     .btn-login:hover {
-      background: #2a2a2a;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(17,16,16,0.2);
+      background: linear-gradient(135deg, #8a4eb8 0%, #b85a9a 100%);
+      box-shadow: 0 12px 32px rgba(155,94,200,0.55);
+      transform: translateY(-2px);
     }
     .btn-login:active { transform: translateY(0); }
 
     /* divider */
     .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 1rem;
-      font-size: 0.75rem;
-      color: var(--muted);
-      font-family: Arial, sans-serif;
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 1rem; font-size: .72rem;
+      color: rgba(255,255,255,0.2);
     }
     .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
+      content: ''; flex: 1; height: 1px;
+      background: rgba(255,255,255,0.1);
     }
 
-    /* patient btn */
+    /* patient button */
     .btn-patient {
-      width: 100%;
-      padding: 0.85rem;
-      background: transparent;
-      color: var(--ink);
-      font-family: Arial, sans-serif;
-      font-weight: 500;
-      font-size: 0.88rem;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
+      width: 100%; padding: .82rem;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.65);
+      font-family: 'Inter', sans-serif; font-weight: 500; font-size: .86rem;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 12px; cursor: pointer;
+      transition: all .2s;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; text-decoration: none;
     }
     .btn-patient:hover {
-      border-color: var(--ink);
-      background: rgba(17,16,16,0.03);
-      color: var(--ink);
+      border-color: rgba(200,106,200,0.4);
+      background: rgba(200,106,200,0.1);
+      color: #fff;
     }
 
-    /* copyright */
     .form-footer {
-      margin-top: 2rem;
-      font-size: 0.72rem;
-      color: var(--muted);
-      text-align: center;
-      font-family: Arial, sans-serif;
+      margin-top: 1.75rem; font-size: .68rem;
+      color: rgba(255,255,255,0.2); text-align: center;
     }
 
-    /* responsive */
     @media (max-width: 768px) {
       body { grid-template-columns: 1fr; }
       .left { display: none; }
@@ -430,16 +305,14 @@
 
 <!-- ── LEFT ── -->
 <div class="left">
-  <div class="left-bg"></div>
-  <div class="left-grid"></div>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 
   <div class="left-brand">
-    <div class="brand-mark">🏥</div>
+    <div class="brand-mark"><i class="bi bi-clipboard2-pulse text-white"></i></div>
     <div>
-      <div class="brand-text">QueueMed</div>
+      <div class="brand-name">QueueMed</div>
       <div class="brand-sub">Queue Management</div>
     </div>
   </div>
@@ -449,40 +322,37 @@
       <span class="dot"></span>
       System Online
     </div>
-    <h1 class="left-headline">
-      <em>QueueMed</em>
-    </h1>
+    <h1 class="left-headline"><em>QueueMed</em></h1>
     <p class="left-desc">
       Manage patient flow in real-time. Reduce wait times, improve experience, and keep your clinic running smoothly.
     </p>
   </div>
 
-  <!-- stats row removed -->
   <div></div>
 </div>
 
 <!-- ── RIGHT ── -->
 <div class="right">
-  <div class="form-wrap">
+  <div class="form-card">
 
     <h2 class="form-heading">Welcome back</h2>
     <p class="form-sub">Sign in to your admin account</p>
 
-    <!-- ALERTS -->
     <?php if (session()->getFlashdata('success')): ?>
     <div class="alert alert-success">
-      ✓ <?= session()->getFlashdata('success') ?>
+      <i class="bi bi-check-circle-fill"></i> <?= session()->getFlashdata('success') ?>
     </div>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')): ?>
     <div class="alert alert-danger">
-      ✕ <?= session()->getFlashdata('error') ?>
+      <i class="bi bi-exclamation-circle-fill"></i> <?= session()->getFlashdata('error') ?>
     </div>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('errors')): ?>
     <div class="alert alert-danger">
+      <i class="bi bi-exclamation-circle-fill"></i>
       <ul>
         <?php foreach (session()->getFlashdata('errors') as $err): ?>
         <li><?= esc($err) ?></li>
@@ -491,27 +361,25 @@
     </div>
     <?php endif; ?>
 
-    <!-- FORM -->
     <form method="POST" action="<?= base_url('login') ?>">
       <?= csrf_field() ?>
 
       <div class="field">
         <label>Email Address</label>
         <div class="input-wrap">
-          <span class="input-icon">✉</span>
-          <input type="email" name="email" class="with-icon" placeholder="you@clinic.com"
-            value="<?= old('email') ?>" required autofocus/>
+          <i class="bi bi-envelope input-icon"></i>
+          <input type="email" name="email" placeholder="you@clinic.com"
+                 value="<?= old('email') ?>" required autofocus/>
         </div>
       </div>
 
       <div class="field">
         <label>Password</label>
         <div class="input-wrap">
-          <!-- No lock icon, clean input -->
           <input type="password" name="password" id="password" class="no-icon"
-            placeholder="Enter your password" required/>
-          <button type="button" class="pw-toggle" id="togglePw" title="Show/hide password">
-            <span id="eyeIcon">👁</span>
+                 placeholder="Enter your password" required/>
+          <button type="button" class="pw-toggle" id="togglePw">
+            <i class="bi bi-eye" id="eyeIcon"></i>
           </button>
         </div>
       </div>
@@ -525,14 +393,14 @@
       </div>
 
       <button type="submit" class="btn-login">
-        Login
+        <i class="bi bi-box-arrow-in-right"></i> Login
       </button>
     </form>
 
     <div class="divider">or</div>
 
     <a href="<?= base_url('/') ?>" class="btn-patient">
-      Get Queue Number (Patient)
+      <i class="bi bi-ticket-perforated"></i> Get Queue Number (Patient)
     </a>
 
     <div class="form-footer">
@@ -546,11 +414,10 @@
   const togglePw = document.getElementById('togglePw');
   const pwInput  = document.getElementById('password');
   const eyeIcon  = document.getElementById('eyeIcon');
-
   togglePw?.addEventListener('click', () => {
     const hidden = pwInput.type === 'password';
     pwInput.type = hidden ? 'text' : 'password';
-    eyeIcon.textContent = hidden ? '🙈' : '👁';
+    eyeIcon.className = hidden ? 'bi bi-eye-slash' : 'bi bi-eye';
   });
 </script>
 </body>

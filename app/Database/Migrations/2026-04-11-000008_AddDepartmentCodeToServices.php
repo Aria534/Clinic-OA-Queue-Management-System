@@ -8,22 +8,29 @@ class AddDepartmentCodeToServices extends Migration
 {
     public function up()
     {
-        $this->forge->addColumn('services', [
-            'department_code' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 10,
-                'null'       => true,
-                'default'    => 'G',
-                'after'      => 'name',
-            ],
-        ]);
+        // Department_code is now included in CreateServicesTable migration
+        // This migration adds it only if it doesn't already exist
+        if (!$this->db->fieldExists('department_code', 'services')) {
+            $this->forge->addColumn('services', [
+                'department_code' => [
+                    'type'       => 'VARCHAR',
+                    'constraint' => 5,
+                    'default'    => 'G',
+                    'after'      => 'updated_at',
+                ],
+            ]);
+        }
 
-        // Set default codes for existing services
-        $this->db->query("UPDATE services SET department_code = UPPER(LEFT(name, 1)) WHERE department_code IS NULL OR department_code = 'G'");
+        // Ensure all existing services have proper department codes
+        $this->db->query(
+            "UPDATE services SET department_code = 'G' WHERE department_code IS NULL OR department_code = ''"
+        );
     }
 
     public function down()
     {
-        $this->forge->dropColumn('services', 'department_code');
+        if ($this->db->fieldExists('department_code', 'services')) {
+            $this->forge->dropColumn('services', 'department_code');
+        }
     }
 }
